@@ -19,6 +19,10 @@ class PwaWorker {
   /// Offline URLs (if any).
   List<String> offlineUrls;
 
+  /// Whether the new SW version should be installed immediately, instead of
+  /// waiting for the older versions to be stopped and unregistered.
+  bool skipWaiting = true;
+
   /// Method that will get called on installing the PWA.
   Future onInstall() => null;
 
@@ -72,4 +76,8 @@ void _run(PwaWorker worker) {
     }
     event.respondWith(handler(event.request));
   });
+
+  if (worker.skipWaiting) {
+    skipWaiting();
+  }
 }
