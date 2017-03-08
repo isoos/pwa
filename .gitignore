@@ -1,15 +1,23 @@
-# Don’t commit the following directories created by pub.
-.buildlog
+# Files and directories created by pub
+.packages
 .pub/
 build/
 packages
-.packages
+# Remove the following pattern if you wish to check in your lock file
+pubspec.lock
 
-# Or the files created by dart2js.
+# Files created by dart2js
 *.dart.js
-*.js_
+*.part.js
 *.js.deps
 *.js.map
+*.info.json
 
-# Include when developing application packages.
-pubspec.lock
+# Directory created by dartdoc
+doc/api/
+
+# JetBrains IDEs
+.idea/
+*.iml
+*.ipr
+*.iws
