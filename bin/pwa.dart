@@ -66,6 +66,8 @@ Future<List<String>> scanOfflineUrls(ArgResults argv) async {
       if (name.endsWith('/$indexHtml')) {
         name = name.substring(0, name.length - indexHtml.length);
       }
+      // making URLs relative
+      name = '.$name';
       urls.add(name);
     }
   }

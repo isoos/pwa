@@ -6,7 +6,7 @@ import 'package:service_worker/window.dart' as sw;
 abstract class PwaClient {
   /// Initializes a PWA client instance, also triggering the registration of
   /// the ServiceWorker on the given [scriptUrl].
-  factory PwaClient({String scriptUrl: '/pwa.g.dart.js'}) =>
+  factory PwaClient({String scriptUrl: './pwa.g.dart.js'}) =>
       new _PwaClient(scriptUrl);
 
   /// Whether the PWA is supported on this client.
