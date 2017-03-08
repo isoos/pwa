@@ -104,7 +104,7 @@ Future generateWorkerScript(ArgResults argv, String libInclude) async {
   bool hasWorkerConfig = new File('$libDir/worker.dart').existsSync();
 
   String customImport = 'import \'package:$libInclude/pwa/offline_urls.g.dart\' as offline;';
-  String createWorker = 'PwaConfig worker = new PwaWorker()..offlineUrls = offline.offlineUrls;';
+  String createWorker = 'PwaWorker worker = new PwaWorker()..offlineUrls = offline.offlineUrls;';
   if (hasWorkerConfig) {
     customImport = 'import \'package:$libInclude/pwa/worker.dart\' as custom;';
     createWorker = 'PwaWorker worker = custom.createWorker();';
