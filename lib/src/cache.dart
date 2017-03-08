@@ -140,9 +140,6 @@ class DynamicCache extends PwaCacheMixin {
     _cacheName = 'pwa-dyn-$name';
     _networkHandler =
         noNetworkCaching ? noCacheNetworkFetch : defaultFetchHandler;
-    // do not block normal initialization path with async cleanup
-    // ignore: unawaited_futures
-    _removeOldAndExcessEntries();
   }
 
   @override

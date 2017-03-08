@@ -5,6 +5,9 @@
 - The generated offline URLs and the SW registration is changed to relative URLS,
   we can put the application in any directory.
 - DynamicCache evicts older entries first (previously it was random).
+- DynamicCache doesn't evicts old entries on initialization, which enables
+  offline-aware caches to outlive the set expiration until the next successful
+  network event.
 
 ## 0.0.1
 
