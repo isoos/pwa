@@ -225,4 +225,5 @@ final List<String> offlineUrls = [
   './packages/intl/src/data/dates/symbols/zu.json',
   './packages/pwa_example/app/app_component.html',
   './packages/pwa_example/app/deferred_component.html',
+  './styles.css',
 ];

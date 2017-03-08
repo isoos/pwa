@@ -8,6 +8,7 @@
 - DynamicCache doesn't evicts old entries on initialization, which enables
   offline-aware caches to outlive the set expiration until the next successful
   network event.
+- Support for caching common web fonts. 
 
 ## 0.0.1
 

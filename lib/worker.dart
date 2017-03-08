@@ -16,8 +16,18 @@ class PwaWorker {
   /// The router for the fetch events.
   final Router router = new Router();
 
-  /// Offline URLs (if any).
+  /// These URLs will be pre-cached and kept up-to-date
+  /// for each deployed version of the application.
   List<String> offlineUrls;
+
+  /// Whether to cache web fonts loaded from common third-party websites.
+  /// These resources will be cached after the first time they are accessed on
+  /// the network, and will be available for offline use.
+  ///
+  /// The default is using a network-first approach, always updating the cache
+  /// with new versions if they become available. The eviction policy is
+  /// generous: entries are evicted after a year or after 256 items.
+  bool cacheCommonWebFonts = true;
 
   /// Whether the new SW version should be installed immediately, instead of
   /// waiting for the older versions to be stopped and unregistered.
@@ -44,6 +54,15 @@ void _run(PwaWorker worker) {
   BlockCache offline =
       worker.offlineUrls == null ? null : new BlockCache('offline');
 
+  DynamicCache commonWebFonts;
+  if (worker.cacheCommonWebFonts) {
+    commonWebFonts = new DynamicCache('common-webfonts',
+        maxAge: new Duration(days: 365), maxEntries: 256);
+    for (String prefix in _commonWebFontPrefixes) {
+      worker.router.get(prefix, commonWebFonts.networkFirst);
+    }
+  }
+
   Func0<Future> installCallback = () async {
     if (offline != null) {
       await offline.precache(worker.offlineUrls);
@@ -67,12 +86,7 @@ void _run(PwaWorker worker) {
     Handler handler = worker.router.match(event.request);
     handler ??= defaultFetchHandler;
     if (offline != null) {
-      // TODO: re-enable offline first?
-//      if (config.isOfflineFirst) {
-//        handler = joinHandlers([offline.cacheOnly, handler]);
-//      } else {
       handler = joinHandlers([handler, offline.cacheFirst]);
-//      }
     }
     event.respondWith(handler(event.request));
   });
@@ -81,3 +95,10 @@ void _run(PwaWorker worker) {
     skipWaiting();
   }
 }
+
+final List<String> _commonWebFontPrefixes = [
+  // Google Web Fonts
+  'https://fonts.google.com/',
+  'https://fonts.googleapis.com/',
+  'https://fonts.gstatic.com/',
+];
