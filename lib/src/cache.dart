@@ -214,21 +214,34 @@ class DynamicCache extends PwaCacheMixin {
     Cache cache = await _openCache();
     if (maxAge != null || maxEntries != null) {
       List<Request> keys = await cache.keys();
-      List<Request> remaining = [];
+      List<_RequestResponse> entries = [];
       for (Request rq in keys) {
         Response rs = await cache.match(rq);
         Duration age = _getAge(rs?.headers);
         if (age != null && age > maxAge) {
           await cache.delete(rq);
         } else {
-          remaining.add(rq);
+          entries.add(new _RequestResponse(rq, rs, age));
         }
       }
-      if (maxEntries != null && maxEntries > 0) {
-        while (remaining.length > maxEntries) {
-          await cache.delete(remaining.removeLast());
+      // Remove the older entries first.
+      if (entries.length > maxEntries) {
+        entries.sort((a, b) {
+          if (a.age == null) return 1;
+          if (b.age == null) return -1;
+          return a.age.compareTo(b.age);
+        });
+        while (entries.length > maxEntries) {
+          await cache.delete(entries.removeLast().request);
         }
       }
     }
   }
+}
+
+class _RequestResponse {
+  final Request request;
+  final Response response;
+  final Duration age;
+  _RequestResponse(this.request, this.response, this.age);
 }
