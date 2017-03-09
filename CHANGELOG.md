@@ -1,3 +1,9 @@
+## 0.0.3
+
+*Breaking changes*:
+
+- `BlockCache` and `DynamicCache` don't expose their initialization parameters.
+
 ## 0.0.2
 
 - Fix default codegen.

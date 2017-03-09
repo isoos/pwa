@@ -28,8 +28,6 @@ abstract class PwaCacheMixin {
 ///
 /// The underlying cache name is derived as `pwa-block-[name]-[timestamp]`.
 class BlockCache extends PwaCacheMixin {
-  /// The name of the block.
-  final String name;
   String _cachePrefix;
 
   Future _initializeFuture;
@@ -38,7 +36,10 @@ class BlockCache extends PwaCacheMixin {
   Cache _cache;
 
   /// Initialize the [BlockCache].
-  BlockCache(this.name) {
+  BlockCache(
+
+      /// The name of the block.
+      String name) {
     _cachePrefix = 'pwa-block-$name-';
     _initializeFuture = _init();
   }
@@ -113,14 +114,8 @@ class BlockCache extends PwaCacheMixin {
 ///
 /// The underlying cache name is derived as `pwa-dyn-[name]`.
 class DynamicCache extends PwaCacheMixin {
-  /// The name of the cache.
-  final String name;
-
-  /// The maximum age of the matched entries.
-  final Duration maxAge;
-
-  /// The maximum number of entries.
-  final int maxEntries;
+  final Duration _maxAge;
+  final int _maxEntries;
 
   /// The network fetch handler.
   Handler _networkHandler;
@@ -130,13 +125,20 @@ class DynamicCache extends PwaCacheMixin {
   /// Initialize a new [DynamicCache] instance. Provide reasonable constraint
   /// over the [maxAge] and [maxEntries], do not put millions of entries inside.
   DynamicCache(
-    this.name, {
-    this.maxAge: const Duration(days: 7),
-    this.maxEntries: 20,
+    /// The name of the cache.
+    String name, {
+
+    /// The maximum age of the matched entries.
+    Duration maxAge: const Duration(days: 7),
+
+    /// The maximum number of entries.
+    int maxEntries: 20,
 
     /// When set, it will force the network fetch to skip any caching.
     bool noNetworkCaching: false,
-  }) {
+  })
+      : _maxAge = maxAge,
+        _maxEntries = maxEntries {
     _cacheName = 'pwa-dyn-$name';
     _networkHandler =
         noNetworkCaching ? noCacheNetworkFetch : defaultFetchHandler;
@@ -146,9 +148,9 @@ class DynamicCache extends PwaCacheMixin {
   Future<Response> cacheOnly(Request request) async {
     Cache cache = await _openCache();
     Response response = await cache.match(request.clone());
-    if (response != null && maxAge != null) {
+    if (response != null && _maxAge != null) {
       Duration age = _getAge(response?.headers);
-      if (age != null && age > maxAge) {
+      if (age != null && age > _maxAge) {
         // do not block normal handler path with async cleanup
         // ignore: unawaited_futures
         cache.delete(request.url);
@@ -209,26 +211,26 @@ class DynamicCache extends PwaCacheMixin {
 
   Future _removeOldAndExcessEntries() async {
     Cache cache = await _openCache();
-    if (maxAge != null || maxEntries != null) {
+    if (_maxAge != null || _maxEntries != null) {
       List<Request> keys = await cache.keys();
       List<_RequestResponse> entries = [];
       for (Request rq in keys) {
         Response rs = await cache.match(rq);
         Duration age = _getAge(rs?.headers);
-        if (age != null && age > maxAge) {
+        if (age != null && age > _maxAge) {
           await cache.delete(rq);
         } else {
           entries.add(new _RequestResponse(rq, rs, age));
         }
       }
       // Remove the older entries first.
-      if (entries.length > maxEntries) {
+      if (entries.length > _maxEntries) {
         entries.sort((a, b) {
           if (a.age == null) return 1;
           if (b.age == null) return -1;
           return a.age.compareTo(b.age);
         });
-        while (entries.length > maxEntries) {
+        while (entries.length > _maxEntries) {
           await cache.delete(entries.removeLast().request);
         }
       }
