@@ -24,6 +24,20 @@ abstract class PwaCacheMixin {
       raceHandlers([cacheOnly, networkOnly])(request);
 }
 
+String _defaultCachePrefixValue;
+String get _defaultCachePrefix {
+  if (_defaultCachePrefixValue == null) {
+    String name = location.pathname;
+    if (name.endsWith('.js')) name = name.substring(0, name.length - 3);
+    if (name.endsWith('.dart')) name = name.substring(0, name.length - 5);
+    if (name.endsWith('.g')) name = name.substring(0, name.length - 2);
+    if (name.startsWith('/')) name = name.substring(1);
+    name = name.replaceAll('-', '--').replaceAll('/', '-');
+    _defaultCachePrefixValue = name;
+  }
+  return _defaultCachePrefixValue;
+}
+
 /// An all-or-nothing cache that is ideal for offline-enabled PWAs.
 ///
 /// The underlying cache name is derived as `pwa-block-[name]-[timestamp]`.
@@ -37,10 +51,20 @@ class BlockCache extends PwaCacheMixin {
 
   /// Initialize the [BlockCache].
   BlockCache(
+    /// The name of the block.
+    String name, {
 
-      /// The name of the block.
-      String name) {
-    _cachePrefix = 'pwa-block-$name-';
+    /// The cache prefix. Caches are global and may be shared between
+    /// different applications (service workers) on the same domain. This
+    /// value defaults to a path-specific prefix, that will be derived from
+    /// the path of the SW and because of that unique to the scope of it.
+    ///
+    /// If not specified, the service worker's path name will be used to
+    /// derive the prefix. In the default setup this will be `pwa`.
+    String prefix,
+  }) {
+    prefix ??= _defaultCachePrefix;
+    _cachePrefix = '$prefix-block-$name-';
     _initializeFuture = _init();
   }
 
@@ -136,10 +160,20 @@ class DynamicCache extends PwaCacheMixin {
 
     /// When set, it will force the network fetch to skip any caching.
     bool noNetworkCaching: false,
+
+    /// The cache prefix. Caches are global and may be shared between
+    /// different applications (service workers) on the same domain. This
+    /// value defaults to a path-specific prefix, that will be derived from
+    /// the path of the SW and because of that unique to the scope of it.
+    ///
+    /// If not specified, the service worker's path name will be used to
+    /// derive the prefix. In the default setup this will be `pwa`.
+    String prefix,
   })
       : _maxAge = maxAge,
         _maxEntries = maxEntries {
-    _cacheName = 'pwa-dyn-$name';
+    prefix ??= _defaultCachePrefix;
+    _cacheName = '$prefix-dyn-$name';
     _networkHandler =
         noNetworkCaching ? noCacheNetworkFetch : defaultFetchHandler;
   }

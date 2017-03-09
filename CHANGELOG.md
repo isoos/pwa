@@ -2,7 +2,17 @@
 
 *Breaking changes*:
 
-- `BlockCache` and `DynamicCache` don't expose their initialization parameters.
+- (API) `BlockCache` and `DynamicCache` don't expose their initialization
+  parameters. This is a minor change, it is unlikely to affect anybody.
+  
+- (behavior) `BlockCache` and `DynamicCache` use path-specific cache prefixes,
+  in order to prevent collision between apps that are installed on the same domain.
+  
+  This fixes unintended cache collisions, but also breaks if you were building on
+  sharing the caches between apps. In this case, use the new `prefix` optional
+  argument when instantiating caches.
+  
+  If you have used only a single application in the root of the domain, you are not affected by this change.
 
 ## 0.0.2
 
