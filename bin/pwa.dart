@@ -77,9 +77,10 @@ Future<List<String>> scanOfflineUrls(ArgResults argv) async {
 
 /// Updates the offline_urls.g.dart file.
 Future writeOfflineUrls(List<String> urls, String fileName) async {
-  if(Platform.isWindows) {
+  if (Platform.isWindows) {
     // replace windows file separators to URI separator as per rfc3986
-    urls = urls.map((url) => url.replaceAll(Platform.pathSeparator, '/')).toList();
+    urls =
+        urls.map((url) => url.replaceAll(Platform.pathSeparator, '/')).toList();
   }
   String listItems = urls.map((s) => '\'$s\',').join();
   String src = '''
@@ -109,8 +110,10 @@ Future generateWorkerScript(ArgResults argv, String libInclude) async {
   String libDir = argv['lib-dir'];
   bool hasWorkerConfig = new File('$libDir/worker.dart').existsSync();
 
-  String customImport = 'import \'package:$libInclude/pwa/offline_urls.g.dart\' as offline;';
-  String createWorker = 'PwaWorker worker = new PwaWorker()..offlineUrls = offline.offlineUrls;';
+  String customImport =
+      'import \'package:$libInclude/pwa/offline_urls.g.dart\' as offline;';
+  String createWorker =
+      'PwaWorker worker = new PwaWorker()..offlineUrls = offline.offlineUrls;';
   if (hasWorkerConfig) {
     customImport = 'import \'package:$libInclude/pwa/worker.dart\' as custom;';
     createWorker = 'PwaWorker worker = custom.createWorker();';
