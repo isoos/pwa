@@ -77,6 +77,10 @@ Future<List<String>> scanOfflineUrls(ArgResults argv) async {
 
 /// Updates the offline_urls.g.dart file.
 Future writeOfflineUrls(List<String> urls, String fileName) async {
+  if(Platform.isWindows) {
+    // replace windows file separators to URI separator as per rfc3986
+    urls = urls.map((url) => url.replaceAll(Platform.pathSeparator, '/')).toList();
+  }
   String listItems = urls.map((s) => '\'$s\',').join();
   String src = '''
     /// URLs for offline cache.
