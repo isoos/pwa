@@ -6,7 +6,7 @@
 - Updated examples:
   - Added `pwa_defaults`.
   - Moved `example` into `examples/custom_routes`.
-
+- Execute `pub build` when the project has no `build/web` directory yet.
 
 ## 0.0.3
 

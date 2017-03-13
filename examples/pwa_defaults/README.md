@@ -37,10 +37,8 @@ The `pwa` package can generate useful source code for you. In your console,
 run the following commands:
 
 ```bash
-# first build
-pub build
-
 # runs pwa code generation with default settings
+# it will invoke `pub build` if it wasn't run before
 pub run pwa
 
 # seconds build
@@ -49,11 +47,13 @@ pub build
 
 What is going on here?
 
-- The *first* `pub build` will compile the `web/main.dart` to JavaScript, and
-  it populates the `build/web` directory with the compiled version and its
-  static assets.
-
 - `pub run pwa` executes the `pwa` package's default code generator:
+
+  - The offline assets are usually in the `web/build` directory, and they
+    are the result of calling `pub build`. The script detects if it hasn't
+    been run before, and invokes it. It will compile the `web/main.dart` to
+    JavaScript, and it will populate the `build/web` directory with the
+    compiled version and its static assets.
 
   - It scans the `build/web` directory for static assets, like:
     ````

@@ -17,7 +17,9 @@ Future main(List<String> args) async {
         ..addOption('web-dir', defaultsTo: 'web'))
       .parse(args);
 
-  List<String> offlineUrls = await scanOfflineUrls(argv);
+  List<String> offlineDirs = argv['offline'];
+  await buildProjectIfEmpty(offlineDirs);
+  List<String> offlineUrls = await scanOfflineUrls(offlineDirs, argv);
   String offlineUrlsFile = '${argv['lib-dir']}/offline_urls.g.dart';
   await writeOfflineUrls(offlineUrls, offlineUrlsFile);
 
@@ -30,9 +32,30 @@ Future main(List<String> args) async {
   await generateWorkerScript(argv, libInclude);
 }
 
+/// If build/web is empty, run `pub build`.
+Future buildProjectIfEmpty(List<String> offlineDirs) async {
+  // This works only with the default value.
+  if (offlineDirs.length == 1 && offlineDirs.first == 'build/web') {
+    Directory dir = new Directory('build/web');
+    if (dir.existsSync() && dir.listSync().isNotEmpty) return;
+    print('Running pub build the first time:');
+    String executable = Platform.isWindows ? 'pub.exe' : 'pub';
+    print('$executable build');
+    print('-----');
+    Process process = await Process.start(executable, ['build']);
+    Future f1 = stdout.addStream(process.stdout);
+    Future f2 = stderr.addStream(process.stderr);
+    await Future.wait([f1, f2]);
+    int exitCode = await process.exitCode;
+    print('-----');
+    String status = exitCode == 0 ? 'OK' : 'Some error happened.';
+    print('Pub build exited with code $exitCode ($status).');
+  }
+}
+
 /// Scans all of the directories and returns the URLs derived from the files.
-Future<List<String>> scanOfflineUrls(ArgResults argv) async {
-  List<String> offlineDirs = argv['offline'];
+Future<List<String>> scanOfflineUrls(
+    List<String> offlineDirs, ArgResults argv) async {
   String indexHtml = argv['index-html'];
   List<String> excludes = argv['exclude'];
   bool excludeDefaults = argv['exclude-defaults'] == 'true';
