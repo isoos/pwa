@@ -1,3 +1,9 @@
+# Changelog
+
+## 0.0.4
+
+- Fix path separators on Windows.
+
 ## 0.0.3
 
 *Breaking changes*:
