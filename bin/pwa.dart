@@ -85,6 +85,10 @@ Future<List<String>> scanOfflineUrls(
     for (FileSystemEntity fse in list) {
       if (fse is! File) continue;
       String name = fse.path.substring(dir.path.length);
+      if (Platform.isWindows) {
+        // replace windows file separators to URI separator as per rfc3986
+        name = name.replaceAll(Platform.pathSeparator, '/');
+      }
       if (excludeGlobs.any((glob) => glob.matches(name.substring(1)))) continue;
       if (name.endsWith('/$indexHtml')) {
         name = name.substring(0, name.length - indexHtml.length);
@@ -100,11 +104,6 @@ Future<List<String>> scanOfflineUrls(
 
 /// Updates the offline_urls.g.dart file.
 Future writeOfflineUrls(List<String> urls, String fileName) async {
-  if (Platform.isWindows) {
-    // replace windows file separators to URI separator as per rfc3986
-    urls =
-        urls.map((url) => url.replaceAll(Platform.pathSeparator, '/')).toList();
-  }
   String listItems = urls.map((s) => '\'$s\',').join();
   String src = '''
     /// URLs for offline cache.
