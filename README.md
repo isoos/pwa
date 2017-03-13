@@ -18,43 +18,24 @@ Learn more about PWAs:
 - [https://developers.google.com/web/progressive-web-apps/](https://developers.google.com/web/progressive-web-apps/)
 - [https://pwa.rocks/](https://pwa.rocks/)
 
-## Examples
+## Tutorial and Examples
 
-Generate the list of offline URls and the PWA worker:
+**Getting started**
 
-````
-# first build populates build/web
-pub build
+- Getting started: [pwa_defaults](https://github.com/isoos/pwa/tree/master/examples/pwa_defaults)
+  - Shows you how to use the `pwa` package and what it does.
+  - Enables offline asset caching for you web app out-of-the-box. 
 
-# generates lib/pwa/offile_urls.g.dart
-# generates web/pwa.g.dart
-pub run pwa
+- Additional offline urls: [additional_offline_urls](https://github.com/isoos/pwa/tree/master/examples/additional_offline_urls)
+  - Show you how to create the entry point for customization.
+  - Gives you the ability to add additional URLs for the offline cache.
 
-# builds web/pwa.g.dart.js
-pub build
-````
+**Customize caching**
 
-In `lib/pwa/worker.dart`:
+- Custom routes: [custom_routes](https://github.com/isoos/pwa/tree/master/examples/custom_routes)
+  - Familiarize yourself with caching and routes.
+  - Customize cache behavior for different parts of your app.
 
-````dart
-import 'package:pwa/worker.dart';
-import 'offline_urls.g.dart';
-
-/// Creates the PWA worker.
-PwaWorker createWorker() {
-  DynamicCache youtubeThumbnails =
-      new DynamicCache('youtube', maxEntries: 10, noNetworkCaching: true);
-
-  PwaWorker worker = new PwaWorker()
-    ..offlineUrls = offlineUrls;
-
-  worker.router.get('https://i.ytimg.com/vi/', youtubeThumbnails.cacheFirst);
-  return worker;
-}
-````
-
-If you re-run `pub run pwa` now, the generated `web/pwa.g.dart` will use
-this file instead of the default settings.
 
 ## Planned features
 

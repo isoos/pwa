@@ -3,6 +3,10 @@
 ## 0.0.4
 
 - Fix path separators on Windows.
+- Updated examples:
+  - Added `pwa_defaults`.
+  - Moved `example` into `examples/custom_routes`.
+
 
 ## 0.0.3
 
