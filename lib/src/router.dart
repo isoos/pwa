@@ -12,7 +12,12 @@ class FetchRouter {
   List<_RouteRule> _rules = [];
 
   /// Add a pair of [matcher] and [handler] to the end of the rules.
-  void add(RequestMatcher matcher, RequestHandler handler) {
+  @Deprecated('Use registerMatcher instead. add will be removed in 0.1')
+  void add(RequestMatcher matcher, RequestHandler handler) =>
+      registerMatcher(matcher, handler);
+
+  /// Add a pair of [matcher] and [handler] to the end of the rules.
+  void registerMatcher(RequestMatcher matcher, RequestHandler handler) {
     _rules.add(new _RouteRule(matcher, handler));
   }
 
@@ -20,7 +25,7 @@ class FetchRouter {
   /// and the [url] pattern prefix matches [Request.url].
   void registerUrl(String method, Pattern url, RequestHandler handler) {
     // ignore: deprecated_member_use
-    add(urlPrefixMatcher(method, url), handler);
+    registerMatcher(urlPrefixMatcher(method, url), handler);
   }
 
   /// Add a [handler] that will get called if [Request.method] is GET

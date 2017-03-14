@@ -19,6 +19,7 @@
 - Renamed `DynamicCache`'s `noNetworkCaching` -> `skipDiskCache` (not immediately breaking, added deprecated notes).
 
 - Updated methods in `FetchRouter` (not immediately breaking, added deprecated notes)
+  - `add` -> `registerMatcher`
   - new method: `registerUrl` (will make `urlPrefixMatcher` internal)
   - `get` -> `registerGetUrl`
   - `post` -> `registerPostUrl`
