@@ -14,7 +14,7 @@ part 'src/router.dart';
 /// To start the worker, call method: `run()`.
 class Worker {
   /// The router for the fetch events.
-  final Router router = new Router();
+  final FetchRouter router = new FetchRouter();
 
   /// These URLs will be pre-cached and kept up-to-date
   /// for each deployed version of the application.
@@ -89,8 +89,8 @@ void _run(Worker worker) {
   });
 
   onFetch.listen((FetchEvent event) {
-    Handler handler = worker.router.match(event.request);
-    handler ??= defaultFetchHandler;
+    RequestHandler handler = worker.router.match(event.request);
+    handler ??= defaultRequestHandler;
     if (offline != null) {
       handler = joinHandlers([handler, offline.cacheFirst]);
     }

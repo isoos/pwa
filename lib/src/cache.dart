@@ -149,7 +149,7 @@ class DynamicCache extends PwaCacheMixin {
   final int _maxEntries;
 
   /// The network fetch handler.
-  Handler _networkHandler;
+  RequestHandler _networkHandler;
 
   String _cacheName;
 
@@ -182,7 +182,7 @@ class DynamicCache extends PwaCacheMixin {
     prefix ??= _defaultCachePrefix;
     _cacheName = '$prefix-dyn-$name';
     _networkHandler =
-        noNetworkCaching ? noCacheNetworkFetch : defaultFetchHandler;
+        noNetworkCaching ? noCacheNetworkRequestHandler : defaultRequestHandler;
   }
 
   @override

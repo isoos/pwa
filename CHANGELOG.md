@@ -9,6 +9,13 @@
   - `PwaWorker` -> `Worker`
   - `PwaCacheMixin` -> `FetchStrategy`
 
+- Renamed ambiguous items related to the Fetch API (not immediately breaking, added deprecated notes)
+  - `Handler` -> `RequestHandler`
+  - `Matcher` -> `RequestMatcher`
+  - `Router` -> `FetchRouter`
+  - `defaultFetchHandler` -> `defaultRequestHandler`
+  - `noCacheNetworkFetch` -> `noCacheNetworkRequestHandler`
+
 ## 0.0.4
 
 - Fix path separators on Windows.
