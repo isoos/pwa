@@ -3,11 +3,11 @@
 The `pwa` package uses two distinct scopes for enabling progressive features
 to your web application:
 
-- The `PwaClient` in [client.dart](https://github.com/isoos/pwa/blob/master/lib/client.dart)
+- The `Client` in [client.dart](https://github.com/isoos/pwa/blob/master/lib/client.dart)
   is running alongside your (Angular) web application. It is used in `web/main.dart`,
   and will get compiled to `main.dart.js`.
 
-- The `PwaWorker` in [worker.dart](https://github.com/isoos/pwa/blob/master/lib/worker.dart)
+- The `Worker` in [worker.dart](https://github.com/isoos/pwa/blob/master/lib/worker.dart)
   is running as a separate *Service Worker*. Package `pwa` will generate a `web/pwa.g.dart`
   file for you, which you should check-in into your source control, and it will get
   compiled to `pwa.g.dart.js`.
@@ -19,14 +19,14 @@ to your web application:
 Put the `pwa` package in your `pubspec.yaml`, and run `pub get` to update
 the packages in the project.
 
-Make sure that the `PwaClient` is initialized in your Angular app's `web/main.dart`:
+Make sure that the `Client` is initialized in your Angular app's `web/main.dart`:
 
 ````dart
-import 'package:pwa/client.dart';
+import 'package:pwa/client.dart' as pwa;
 
 void main() {
   bootstrap(AppComponent, [
-    new Provider(PwaClient, useValue: new PwaClient()),
+    new Provider(pwa.Client, useValue: new pwa.Client()),
   ]);
 }
 ````
@@ -82,7 +82,7 @@ What is going on here?
     ````
   
   - It creates (or updates) `web/pwa.g.dart`, which is the entry point of the
-    `PwaWorker` mentioned above.
+    `Worker` mentioned above.
     
     - The default behavior pulls in the `offlineUrls` from the generated file
       above, and sets them for using them as an offline cache.

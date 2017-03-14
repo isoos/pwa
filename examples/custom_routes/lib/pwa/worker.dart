@@ -2,9 +2,8 @@ import 'package:pwa/worker.dart';
 import 'offline_urls.g.dart';
 
 /// Creates the PWA worker.
-PwaWorker createWorker() {
-  PwaWorker worker = new PwaWorker()
-    ..offlineUrls = offlineUrls;
+Worker createWorker() {
+  Worker worker = new Worker()..offlineUrls = offlineUrls;
 
   DynamicCache youtubeThumbnails =
       new DynamicCache('youtube', maxEntries: 10, noNetworkCaching: true);

@@ -42,7 +42,7 @@ When the `pwa` ServiceWorker receives a fetch request, it can:
 - try to fetch it from the network,
 - a combination of the above.
 
-`PwaWorker.router` enables a simple chain of rules that will determine
+`Worker.router` enables a simple chain of rules that will determine
 how each of the URLs will be served. It intercepts the fetch requests,
 determines the first matching handler for it, and runs the request through
 the handler.
@@ -52,7 +52,7 @@ cache first, and if there is no match there, it will fetch them over the
 network.
 
 ````dart
-  PwaWorker worker = new PwaWorker()
+  Worker worker = new Worker()
     ..offlineUrls = offlineUrls;
 
   DynamicCache youtubeThumbnails = new DynamicCache('youtube', maxEntries: 10);

@@ -11,14 +11,14 @@ This tutorial assumes that you are familiar with the PWA basics from the followi
 import 'package:pwa/worker.dart';
 
 /// Creates the PWA worker.
-PwaWorker createWorker() {
-  return new PwaWorker();
+Worker createWorker() {
+  return new Worker();
 }
 ````
 
 - Run `pub build` and `pub run pwa`, which will generate the `offline_urls.g.dart`,
   and also your `web/pwa.g.dart`. The later will now use your `worker.dart` to
-  initialize the `PwaWorker`.
+  initialize the `Worker`.
 
 - Update your `lib/pwa/worker.dart` with your additional urls:
 
@@ -34,12 +34,12 @@ List<String> _additionalUrls = new List.from([
 ]);
 ````
 
-And use in in the `PwaWorker`:
+And use in in the `Worker`:
 
 ````dart
-PwaWorker createWorker() {
+Worker createWorker() {
   List<String> extendedUrls = new List.from(offlineUrls)
     ..addAll(_additionalUrls);
-  return new PwaWorker()..offlineUrls = extendedUrls;
+  return new Worker()..offlineUrls = extendedUrls;
 }
 ````

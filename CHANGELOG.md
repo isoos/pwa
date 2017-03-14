@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.0.5
+
+*API refactoring*:
+
+- Remove `Pwa` class name prefix (not immediately breaking, added deprecated notes)
+  - `PwaClient` -> `Client`
+  - `PwaWorker` -> `Worker`
+  - `PwaCacheMixin` -> `FetchStrategy`
+
 ## 0.0.4
 
 - Fix path separators on Windows.

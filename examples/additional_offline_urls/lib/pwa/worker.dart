@@ -10,8 +10,8 @@ List<String> _additionalUrls = new List.from([
 ]);
 
 /// Creates the PWA worker.
-PwaWorker createWorker() {
+Worker createWorker() {
   List<String> extendedUrls = new List.from(offlineUrls)
     ..addAll(_additionalUrls);
-  return new PwaWorker()..offlineUrls = extendedUrls;
+  return new Worker()..offlineUrls = extendedUrls;
 }

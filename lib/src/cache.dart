@@ -1,7 +1,8 @@
 part of pwa_worker;
 
-/// Common request handler strategies for caches.
-abstract class PwaCacheMixin {
+/// Common fetch request handler strategies that combine caching with network
+/// requests.
+abstract class FetchStrategy {
   /// Handles the request only if it is able to serve from the cache.
   Future<Response> cacheOnly(Request request);
 
@@ -24,6 +25,10 @@ abstract class PwaCacheMixin {
       raceHandlers([cacheOnly, networkOnly])(request);
 }
 
+/// Common request handler strategies for caches.
+@Deprecated('Use FetchStrategy instead. PwaCacheMixin will be removed in 0.1')
+abstract class PwaCacheMixin extends FetchStrategy {}
+
 String _defaultCachePrefixValue;
 String get _defaultCachePrefix {
   if (_defaultCachePrefixValue == null) {
@@ -41,6 +46,7 @@ String get _defaultCachePrefix {
 /// An all-or-nothing cache that is ideal for offline-enabled PWAs.
 ///
 /// The underlying cache name is derived as `pwa-block-[name]-[timestamp]`.
+// ignore: deprecated_member_use
 class BlockCache extends PwaCacheMixin {
   String _cachePrefix;
 
@@ -137,6 +143,7 @@ class BlockCache extends PwaCacheMixin {
 /// entries inside the cache.
 ///
 /// The underlying cache name is derived as `pwa-dyn-[name]`.
+// ignore: deprecated_member_use
 class DynamicCache extends PwaCacheMixin {
   final Duration _maxAge;
   final int _maxEntries;

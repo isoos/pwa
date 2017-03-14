@@ -12,7 +12,7 @@ part 'src/router.dart';
 /// PWA Worker object.
 ///
 /// To start the worker, call method: `run()`.
-class PwaWorker {
+class Worker {
   /// The router for the fetch events.
   final Router router = new Router();
 
@@ -43,9 +43,15 @@ class PwaWorker {
   void run() => _run(this);
 }
 
+/// PWA Worker object.
+///
+/// To start the worker, call method: `run()`.
+@Deprecated('Use Worker instead. PwaWorker will be removed in 0.1')
+class PwaWorker extends Worker {}
+
 bool _isRunning = false;
 
-void _run(PwaWorker worker) {
+void _run(Worker worker) {
   if (_isRunning) {
     throw new Exception('PWA must be initalized only once.');
   }
