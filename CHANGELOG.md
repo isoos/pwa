@@ -16,6 +16,8 @@
   - `defaultFetchHandler` -> `defaultRequestHandler`
   - `noCacheNetworkFetch` -> `noCacheNetworkRequestHandler`
 
+- Renamed `DynamicCache`'s `noNetworkCaching` -> `skipDiskCache` (not immediately breaking, added deprecated notes).
+
 ## 0.0.4
 
 - Fix path separators on Windows.

@@ -166,7 +166,11 @@ class DynamicCache extends PwaCacheMixin {
     int maxEntries: 20,
 
     /// When set, it will force the network fetch to skip any caching.
-    bool noNetworkCaching: false,
+    @Deprecated('Use noCacheNetwork instead. skipNetworkCache will be removed in 0.1')
+    bool noNetworkCaching,
+
+    /// When set, it will force the network fetch to skip any caching.
+    bool skipDiskCache: false,
 
     /// The cache prefix. Caches are global and may be shared between
     /// different applications (service workers) on the same domain. This
@@ -181,8 +185,11 @@ class DynamicCache extends PwaCacheMixin {
         _maxEntries = maxEntries {
     prefix ??= _defaultCachePrefix;
     _cacheName = '$prefix-dyn-$name';
-    _networkHandler =
-        noNetworkCaching ? noCacheNetworkRequestHandler : defaultRequestHandler;
+    // ignore: deprecated_member_use
+    skipDiskCache = noNetworkCaching ?? skipDiskCache;
+    _networkHandler = skipDiskCache
+        ? noCacheNetworkRequestHandler
+        : defaultRequestHandler;
   }
 
   @override
