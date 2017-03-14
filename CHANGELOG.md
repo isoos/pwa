@@ -18,6 +18,11 @@
 
 - Renamed `DynamicCache`'s `noNetworkCaching` -> `skipDiskCache` (not immediately breaking, added deprecated notes).
 
+- Updated methods in `FetchRouter` (not immediately breaking, added deprecated notes)
+  - new method: `registerUrl` (will make `urlPrefixMatcher` internal)
+  - `get` -> `registerGetUrl`
+  - `post` -> `registerPostUrl`
+
 ## 0.0.4
 
 - Fix path separators on Windows.

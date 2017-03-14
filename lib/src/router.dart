@@ -16,17 +16,33 @@ class FetchRouter {
     _rules.add(new _RouteRule(matcher, handler));
   }
 
-  /// Add a [handler] that will get called if a [Request] is GET and it
-  /// prefix-matches the [url] pattern.
-  void get(Pattern url, RequestHandler handler) {
-    add(urlPrefixMatcher('get', url), handler);
+  /// Add a [handler] that will get called if [Request.method] equals [method]
+  /// and the [url] pattern prefix matches [Request.url].
+  void registerUrl(String method, Pattern url, RequestHandler handler) {
+    // ignore: deprecated_member_use
+    add(urlPrefixMatcher(method, url), handler);
   }
 
-  /// Add a [handler] that will get called if a [Request] is POST and it
-  /// prefix-matches the [url] pattern.
-  void post(Pattern url, RequestHandler handler) {
-    add(urlPrefixMatcher('post', url), handler);
-  }
+  /// Add a [handler] that will get called if [Request.method] is GET
+  /// and the [url] pattern prefix matches [Request.url].
+  @Deprecated('Use registerGetUrl instead. get will be removed in 0.1')
+  void get(Pattern url, RequestHandler handler) => registerGetUrl(url, handler);
+
+  /// Add a [handler] that will get called if [Request.method] is GET
+  /// and the [url] pattern prefix matches [Request.url].
+  void registerGetUrl(Pattern url, RequestHandler handler) =>
+      registerUrl('get', url, handler);
+
+  /// Add a [handler] that will get called if [Request.method] is POST
+  /// and the [url] pattern prefix matches [Request.url].
+  @Deprecated('Use registerPostUrl instead. post will be removed in 0.1')
+  void post(Pattern url, RequestHandler handler) =>
+      registerUrl('post', url, handler);
+
+  /// Add a [handler] that will get called if [Request.method] is POST
+  /// and the [url] pattern prefix matches [Request.url].
+  void registerPostUrl(Pattern url, RequestHandler handler) =>
+      registerUrl('post', url, handler);
 
   /// Matches the [RequestHandler] for the [request].
   RequestHandler match(Request request) {
@@ -45,6 +61,8 @@ class Router extends FetchRouter {}
 
 /// Returns a [RequestMatcher] that matches the given [method] and [url] pattern as
 /// prefix-match.
+@Deprecated(
+    'Use FetchRouter.registerUrl instead. urlPrefixMatcher will be internal in 0.1')
 RequestMatcher urlPrefixMatcher(String method, Pattern url) {
   String methodLowerCase = method.toLowerCase();
   bool methodMatched = methodLowerCase != 'any';

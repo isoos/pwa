@@ -65,7 +65,7 @@ void _run(Worker worker) {
     commonWebFonts = new DynamicCache('common-webfonts',
         maxAge: new Duration(days: 365), maxEntries: 256);
     for (String prefix in _commonWebFontPrefixes) {
-      worker.router.get(prefix, commonWebFonts.networkFirst);
+      worker.router.registerGetUrl(prefix, commonWebFonts.networkFirst);
     }
   }
 

@@ -57,5 +57,6 @@ network.
 
   DynamicCache youtubeThumbnails = new DynamicCache('youtube', maxEntries: 10);
 
-  worker.router.get('https://i.ytimg.com/vi/', youtubeThumbnails.cacheFirst);
+  worker.router
+      .registerGetUrl('https://i.ytimg.com/vi/', youtubeThumbnails.cacheFirst);
 ````
