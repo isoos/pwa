@@ -52,9 +52,6 @@ cache first, and if there is no match there, it will fetch them over the
 network.
 
 ````dart
-  Worker worker = new Worker()
-    ..offlineUrls = offlineUrls;
-
   DynamicCache youtubeThumbnails = new DynamicCache('youtube', maxEntries: 10);
 
   worker.router

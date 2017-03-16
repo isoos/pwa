@@ -8,9 +8,9 @@ to your web application:
   and will get compiled to `main.dart.js`.
 
 - The `Worker` in [worker.dart](https://github.com/isoos/pwa/blob/master/lib/worker.dart)
-  is running as a separate *Service Worker*. Package `pwa` will generate a `web/pwa.g.dart`
+  is running as a separate *Service Worker*. Package `pwa` will generate a `web/pwa.dart`
   file for you, which you should check-in into your source control, and it will get
-  compiled to `pwa.g.dart.js`.
+  compiled to `pwa.dart.js`.
 
 ## Prepare the project
 
@@ -81,14 +81,14 @@ What is going on here?
     ];
     ````
   
-  - It creates (or updates) `web/pwa.g.dart`, which is the entry point of the
+  - It creates (or updates) `web/pwa.dart`, which is the entry point of the
     `Worker` mentioned above.
     
     - The default behavior pulls in the `offlineUrls` from the generated file
       above, and sets them for using them as an offline cache.
 
 - The *second* `pub build` will compile not only the `web/main.dart`, but also
-  the newly create `web/pwa.g.dart` to JavaScript.
+  the newly create `web/pwa.dart` to JavaScript.
 
 ## Observe the offline behavior
 
@@ -100,7 +100,7 @@ What is going on here?
 - Load the web app in Chrome (e.g. http://localhost:8080/ if running `pub serve`).
 
 - Open Chrome Developer Tools and go to the Applications tab, and select
-  Service Workers on the left. Make sure that `pwa.g.dart.js` is properly
+  Service Workers on the left. Make sure that `pwa.dart.js` is properly
   loaded.
 
 - In Chrome Developer Tools, and go to the Networks tab.

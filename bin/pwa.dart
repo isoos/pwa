@@ -130,29 +130,74 @@ Future<String> detectLibInclude(ArgResults argv) async {
 /// Generates the PWA's worker script.
 Future generateWorkerScript(ArgResults argv, String libInclude) async {
   String libDir = argv['lib-dir'];
-  bool hasWorkerConfig = new File('$libDir/worker.dart').existsSync();
+  bool hasLibWorker = new File('$libDir/worker.dart').existsSync();
 
-  String customImport =
-      'import \'package:$libInclude/pwa/offline_urls.g.dart\' as offline;';
-  String createWorker =
-      'Worker worker = new Worker()..offlineUrls = offline.offlineUrls;';
-  if (hasWorkerConfig) {
-    customImport = 'import \'package:$libInclude/pwa/worker.dart\' as custom;';
-    createWorker = 'Worker worker = custom.createWorker();';
+  File oldPwaGDart = new File('${argv['web-dir']}/pwa.g.dart');
+  File pwaDart = new File('${argv['web-dir']}/pwa.dart');
+
+  String oldLibWorkerMessage = '';
+  String oldPwaGDartMessage = '';
+  if (hasLibWorker) {
+    print('WARN: migrate custom initiation from $libDir/worker.dart');
+    oldLibWorkerMessage =
+        '// TODO: migrate your custom initialization from $libDir/worker.dart\n'
+        '    // This is probably a leftover (custom library from pre-0.1 versions).';
+  }
+  if (oldPwaGDart.existsSync()) {
+    print('WARN: remove ${oldPwaGDart.path}');
+    oldPwaGDartMessage = '// TODO: remove ${oldPwaGDart.path}\n'
+        '    // This is probably a leftover (generated source from pre-0.1 versions).';
   }
 
-  String src = '''import 'package:pwa/worker.dart';
-  $customImport
+  String src = '''
+  import 'package:pwa/worker.dart';
+  import 'package:$libInclude/pwa/offline_urls.g.dart' as offline;
 
-  /// Starts the PWA in the worker scope.
+  /// The Progressive Web Application's entry point.
   void main() {
-    $createWorker
+    // The Worker handles the low-level code for initialization, fetch API
+    // routing and (later) messaging.
+    Worker worker = new Worker();
+
+    // The static assets that need to be in the cache for offline mode.
+    // By default it uses the automatically generated list from the output of
+    // `pub build`. To refresh this list, run `pub run pwa` after each new build.
+    worker.offlineUrls = offline.offlineUrls;
+
+    // The above list can be extended with additional URLs:
+    //
+    // List<String> offlineUrls = new List.from(offline.offlineUrls);
+    // offlineUrls.addAll(['https://www.example.org/custom/resource/']);
+    // worker.offlineUrls = offlineUrls;
+
+    // Fine-tune the caching and network fetch with dynamic caches and cache
+    // strategies on the url-prefixed network routes:
+    //
+    // DynamicCache cache = new DynamicCache('images');
+    // worker.router.registerGetUrl('https://cdn.example.com/', cache.networkFirst);
+
+    $oldLibWorkerMessage
+
+    $oldPwaGDartMessage
+
+    // Start the worker.
     worker.run();
   }
   ''';
   src = new DartFormatter().format(src);
 
-  await _updateIfNeeded('${argv['web-dir']}/pwa.g.dart', src);
+  if (pwaDart.existsSync()) {
+    print('INFO: ${pwaDart.path} exists, no change has been made.');
+    List<String> oldLines = await pwaDart.readAsLines();
+    if (!oldLines.contains('void main() {')) {
+      print('WARN: Entry point in ${pwaDart.path} changed its signature, potential error. '
+          'Do not use async before calling run().');
+    }
+  } else {
+    print('INFO: Creating file: ${pwaDart.path}');
+    pwaDart.parent.createSync(recursive: true);
+    await pwaDart.writeAsString(src);
+  }
 }
 
 Future _updateIfNeeded(String fileName, String content) async {
@@ -166,6 +211,6 @@ Future _updateIfNeeded(String fileName, String content) async {
   } else {
     await file.parent.create(recursive: true);
   }
-  print('Updating $fileName.');
+  print('INFO: Updating file: $fileName');
   await file.writeAsString(content);
 }

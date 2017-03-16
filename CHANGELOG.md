@@ -6,6 +6,10 @@
 
 - Remove deprecated methods and classes (see changes in version 0.0.5).
 
+- Changed the initialization of the Service Worker:
+  - `pwa.g.dart` -> `pwa.dart` (source code generation is one-time only)
+  - `Client` unregisters old version (ANY ServiceWorker ending with `/pwa.g.dart.js`)
+
 ## 0.0.5
 
 *API refactoring*:
