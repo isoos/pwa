@@ -10,6 +10,8 @@
   - `pwa.g.dart` -> `pwa.dart` (source code generation is one-time only)
   - `Client` unregisters old version (ANY ServiceWorker ending with `/pwa.g.dart.js`)
 
+- `Worker.onInstall` and `Worker.onActicate` became fields (instead of being methods).
+
 ## 0.0.5
 
 *API refactoring*:

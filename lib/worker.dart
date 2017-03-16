@@ -9,6 +9,9 @@ part 'src/cache.dart';
 part 'src/handler.dart';
 part 'src/router.dart';
 
+/// Async function that can be used in [Worker.onInstall] and [Worker.onActivate].
+typedef Future AsyncInitializer();
+
 /// PWA Worker object.
 ///
 /// To start the worker, call method: `run()`.
@@ -33,11 +36,11 @@ class Worker {
   /// waiting for the older versions to be stopped and unregistered.
   bool skipWaiting = true;
 
-  /// Method that will get called on installing the PWA.
-  Future onInstall() => null;
+  /// The Function will get called on installing the PWA.
+  AsyncInitializer onInstall;
 
-  /// Method that will get called on activating the PWA.
-  Future onActivate() => null;
+  /// The Function will get called on activating the PWA.
+  AsyncInitializer onActivate;
 
   /// Start the PWA (in the ServiceWorker scope).
   void run() => _run(this);
@@ -67,16 +70,20 @@ void _run(Worker worker) {
     if (offline != null) {
       await offline.precache(worker.offlineUrls);
     }
-    Future f = worker.onInstall();
-    if (f != null) await f;
+    if (worker.onInstall != null) {
+      Future f = worker.onInstall();
+      if (f != null) await f;
+    }
   };
   onInstall.listen((InstallEvent event) {
     event.waitUntil(installCallback());
   });
 
   Func0<Future> activateCallback = () async {
-    Future f = worker.onActivate();
-    if (f != null) await f;
+    if (worker.onActivate != null) {
+      Future f = worker.onActivate();
+      if (f != null) await f;
+    }
   };
   onActivate.listen((ExtendableEvent event) {
     event.waitUntil(activateCallback());
