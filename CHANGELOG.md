@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.0
+
+**Breaking changes:**
+
+- Remove deprecated methods and classes (see changes in version 0.0.5).
+
 ## 0.0.5
 
 *API refactoring*:

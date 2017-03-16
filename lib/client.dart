@@ -7,27 +7,16 @@ abstract class Client {
   /// Initializes a PWA client instance, also triggering the registration of
   /// the ServiceWorker on the given [scriptUrl].
   factory Client({String scriptUrl: './pwa.g.dart.js'}) =>
-      new _PwaClient(scriptUrl);
+      new _Client(scriptUrl);
 
   /// Whether the PWA is supported on this client.
   bool get isSupported;
 }
 
-/// PWA client that is running in the window scope.
-@Deprecated('Use Client instead. PwaClient will be removed in 0.1')
-abstract class PwaClient extends Client {
-  /// Initializes a PWA client instance, also triggering the registration of
-  /// the ServiceWorker on the given [scriptUrl].
-  @Deprecated('Use Client instead. PwaClient will be removed in 0.1')
-  factory PwaClient({String scriptUrl: './pwa.g.dart.js'}) =>
-      new _PwaClient(scriptUrl);
-}
-
-// ignore: deprecated_member_use
-class _PwaClient implements PwaClient {
+class _Client implements Client {
   // Future<sw.ServiceWorkerRegistration> _registration;
 
-  _PwaClient(String scriptUrl) {
+  _Client(String scriptUrl) {
     if (isSupported) {
       // _registration =
       _register(scriptUrl);

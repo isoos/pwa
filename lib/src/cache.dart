@@ -25,10 +25,6 @@ abstract class FetchStrategy {
       raceHandlers([cacheOnly, networkOnly])(request);
 }
 
-/// Common request handler strategies for caches.
-@Deprecated('Use FetchStrategy instead. PwaCacheMixin will be removed in 0.1')
-abstract class PwaCacheMixin extends FetchStrategy {}
-
 String _defaultCachePrefixValue;
 String get _defaultCachePrefix {
   if (_defaultCachePrefixValue == null) {
@@ -46,8 +42,7 @@ String get _defaultCachePrefix {
 /// An all-or-nothing cache that is ideal for offline-enabled PWAs.
 ///
 /// The underlying cache name is derived as `pwa-block-[name]-[timestamp]`.
-// ignore: deprecated_member_use
-class BlockCache extends PwaCacheMixin {
+class BlockCache extends FetchStrategy {
   String _cachePrefix;
 
   Future _initializeFuture;
@@ -143,8 +138,7 @@ class BlockCache extends PwaCacheMixin {
 /// entries inside the cache.
 ///
 /// The underlying cache name is derived as `pwa-dyn-[name]`.
-// ignore: deprecated_member_use
-class DynamicCache extends PwaCacheMixin {
+class DynamicCache extends FetchStrategy {
   final Duration _maxAge;
   final int _maxEntries;
 
@@ -166,10 +160,6 @@ class DynamicCache extends PwaCacheMixin {
     int maxEntries: 20,
 
     /// When set, it will force the network fetch to skip any caching.
-    @Deprecated('Use noCacheNetwork instead. skipNetworkCache will be removed in 0.1')
-    bool noNetworkCaching,
-
-    /// When set, it will force the network fetch to skip any caching.
     bool skipDiskCache: false,
 
     /// The cache prefix. Caches are global and may be shared between
@@ -185,11 +175,8 @@ class DynamicCache extends PwaCacheMixin {
         _maxEntries = maxEntries {
     prefix ??= _defaultCachePrefix;
     _cacheName = '$prefix-dyn-$name';
-    // ignore: deprecated_member_use
-    skipDiskCache = noNetworkCaching ?? skipDiskCache;
-    _networkHandler = skipDiskCache
-        ? noCacheNetworkRequestHandler
-        : defaultRequestHandler;
+    _networkHandler =
+        skipDiskCache ? noCacheNetworkRequestHandler : defaultRequestHandler;
   }
 
   @override

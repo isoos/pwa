@@ -3,26 +3,12 @@ part of pwa_worker;
 /// Handles [request] and returns a Future which completes with a [Response].
 typedef Future<Response> RequestHandler(Request request);
 
-/// Handles [request] and returns a Future which completes with a [Response].
-@Deprecated('Use RequestHandler instead. Handler will be removed in 0.1')
-typedef Future<Response> Handler(Request request);
-
 /// Network [RequestHandler] with the default disk caching.
 final RequestHandler defaultRequestHandler = fetch;
-
-/// Network [RequestHandler] with the default disk caching.
-@Deprecated(
-    'Use defaultRequestHandler instead. defaultFetchHandler will be removed in 0.1')
-final RequestHandler defaultFetchHandler = defaultRequestHandler;
 
 /// Network [RequestHandler] that skips the default disk cache.
 final RequestHandler noCacheNetworkRequestHandler =
     (Request request) => fetch(request, new RequestInit(cache: 'no-store'));
-
-/// Network [RequestHandler] that skips disk cache.
-@Deprecated(
-    'Use noCacheNetworkRequestHandler instead. noCacheNetworkFetch will be removed in 0.1')
-final RequestHandler noCacheNetworkFetch = noCacheNetworkRequestHandler;
 
 /// Whether the [response] is valid (e.g. not an error, not a missing item).
 bool isValidResponse(Response response) {

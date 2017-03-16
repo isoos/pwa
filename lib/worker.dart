@@ -43,12 +43,6 @@ class Worker {
   void run() => _run(this);
 }
 
-/// PWA Worker object.
-///
-/// To start the worker, call method: `run()`.
-@Deprecated('Use Worker instead. PwaWorker will be removed in 0.1')
-class PwaWorker extends Worker {}
-
 bool _isRunning = false;
 
 void _run(Worker worker) {
