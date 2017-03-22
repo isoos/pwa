@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.2
+
+- Filter offline URLs:
+  - `dart2js` debug outputs (`.dart.info.json`)
+  - `package:test` and `package:package_resolver` assets
+
 ## 0.1.1
 
 - Generating `lastModified` timestamp (in String) for offline URLs.

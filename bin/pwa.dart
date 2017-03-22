@@ -77,6 +77,8 @@ class _OfflineUrlScanner {
       excludeGlobs.addAll([
         // Dart Analyzer
         '**/format.fbs',
+        // dart2js
+        '**.dart.info.json',
         // Angular
         '**.ng_meta.json',
         '**.ng_summary.json',
@@ -86,6 +88,9 @@ class _OfflineUrlScanner {
         // PWA
         'pwa.dart.js',
         'pwa.g.dart.js',
+        // misc packages
+        'packages/test/**',
+        'packages/package_resolver/**',
       ].map((s) => new Glob(s)));
     }
     excludeGlobs.addAll(_excludes.map((s) => new Glob(s)));
