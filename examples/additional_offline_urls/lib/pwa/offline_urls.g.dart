@@ -227,3 +227,6 @@ final List<String> offlineUrls = [
   './packages/pwa_example/app/deferred_component.html',
   './styles.css',
 ];
+
+/// Last modified timestamp of the files
+final String lastModified = '2017-03-22T10:07:20.000Z';

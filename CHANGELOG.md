@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.1
+
+- Generating `lastModified` timestamp (in String) for offline URLs.
+- Encouraging (but not yet enforcing) to use a version String in `Worker.run()`.
+- The generated `pwa.dart` uses `offline.lastModified` as the version.
+
 ## 0.1.0
 
 **Breaking changes:**

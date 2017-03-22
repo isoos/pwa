@@ -19,9 +19,10 @@ Future main(List<String> args) async {
 
   List<String> offlineDirs = argv['offline'];
   await buildProjectIfEmpty(offlineDirs);
-  List<String> offlineUrls = await scanOfflineUrls(offlineDirs, argv);
+  var urlScanner = new _OfflineUrlScanner.fromArgv(argv);
+  await urlScanner.scan();
   String offlineUrlsFile = '${argv['lib-dir']}/offline_urls.g.dart';
-  await writeOfflineUrls(offlineUrls, offlineUrlsFile);
+  await urlScanner.writeToFile(offlineUrlsFile);
 
   String libInclude = await detectLibInclude(argv);
   if (libInclude == null) {
@@ -54,63 +55,86 @@ Future buildProjectIfEmpty(List<String> offlineDirs) async {
 }
 
 /// Scans all of the directories and returns the URLs derived from the files.
-Future<List<String>> scanOfflineUrls(
-    List<String> offlineDirs, ArgResults argv) async {
-  String indexHtml = argv['index-html'];
-  List<String> excludes = argv['exclude'];
-  bool excludeDefaults = argv['exclude-defaults'] == 'true';
+class _OfflineUrlScanner {
+  List<String> _offlineDirs;
+  String _indexHtml;
+  List<String> _excludes;
+  bool _excludeDefaults;
 
-  List<Glob> excludeGlobs = [];
-  if (excludeDefaults) {
-    excludeGlobs.addAll([
-      // Dart Analyzer
-      '**/format.fbs',
-      // Angular
-      '**.ng_meta.json',
-      '**.ng_summary.json',
-      '**/README.txt',
-      '**/README.md',
-      '**/LICENSE',
-      // PWA
-      'pwa.dart.js',
-      'pwa.g.dart.js',
-    ].map((s) => new Glob(s)));
+  List<String> offlineUrls;
+  DateTime lastModified;
+
+  _OfflineUrlScanner.fromArgv(ArgResults argv) {
+    _offlineDirs = argv['offline'];
+    _indexHtml = argv['index-html'];
+    _excludes = argv['exclude'];
+    _excludeDefaults = argv['exclude-defaults'] == 'true';
   }
-  excludeGlobs.addAll(excludes.map((s) => new Glob(s)));
 
-  Set<String> urls = new Set();
-  for (String dirName in offlineDirs) {
-    Directory dir = new Directory(dirName);
-    var list = await dir.list(recursive: true).toList();
-    for (FileSystemEntity fse in list) {
-      if (fse is! File) continue;
-      String name = fse.path.substring(dir.path.length);
-      if (Platform.isWindows) {
-        // replace windows file separators to URI separator as per rfc3986
-        name = name.replaceAll(Platform.pathSeparator, '/');
-      }
-      if (excludeGlobs.any((glob) => glob.matches(name.substring(1)))) continue;
-      if (name.endsWith('/$indexHtml')) {
-        name = name.substring(0, name.length - indexHtml.length);
-      }
-      // making URLs relative
-      name = '.$name';
-      urls.add(name);
+  Future scan() async {
+    List<Glob> excludeGlobs = [];
+    if (_excludeDefaults) {
+      excludeGlobs.addAll([
+        // Dart Analyzer
+        '**/format.fbs',
+        // Angular
+        '**.ng_meta.json',
+        '**.ng_summary.json',
+        '**/README.txt',
+        '**/README.md',
+        '**/LICENSE',
+        // PWA
+        'pwa.dart.js',
+        'pwa.g.dart.js',
+      ].map((s) => new Glob(s)));
     }
+    excludeGlobs.addAll(_excludes.map((s) => new Glob(s)));
+
+    Set<String> urls = new Set();
+    for (String dirName in _offlineDirs) {
+      Directory dir = new Directory(dirName);
+      var list = await dir.list(recursive: true).toList();
+      for (FileSystemEntity fse in list) {
+        if (fse is File) {
+          DateTime m = fse.statSync().modified;
+          if (lastModified == null || lastModified.isBefore(m)) {
+            lastModified = m;
+          }
+          String name = fse.path.substring(dir.path.length);
+          if (Platform.isWindows) {
+            // replace windows file separators to URI separator as per rfc3986
+            name = name.replaceAll(Platform.pathSeparator, '/');
+          }
+          if (excludeGlobs.any((glob) => glob.matches(name.substring(1))))
+            continue;
+          if (name.endsWith('/$_indexHtml')) {
+            name = name.substring(0, name.length - _indexHtml.length);
+          }
+          // making URLs relative
+          name = '.$name';
+          urls.add(name);
+        }
+      }
+    }
+    offlineUrls = urls.toList()..sort();
+    // fallback if no file was detected
+    lastModified ??= new DateTime.now();
   }
 
-  return urls.toList()..sort();
-}
-
-/// Updates the offline_urls.g.dart file.
-Future writeOfflineUrls(List<String> urls, String fileName) async {
-  String listItems = urls.map((s) => '\'$s\',').join();
-  String src = '''
+  /// Updates the offline_urls.g.dart file.
+  Future writeToFile(String fileName) async {
+    String listItems = offlineUrls.map((s) => '\'$s\',').join();
+    String lastModifiedText = lastModified.toUtc().toIso8601String();
+    String src = '''
     /// URLs for offline cache.
     final List<String> offlineUrls = [$listItems];
+
+    /// Last modified timestamp of the files
+    final String lastModified = '$lastModifiedText';
   ''';
-  src = new DartFormatter().format(src);
-  await _updateIfNeeded(fileName, src);
+    src = new DartFormatter().format(src);
+    await _updateIfNeeded(fileName, src);
+  }
 }
 
 /// Detects the package name if lib-include is not set.
@@ -181,7 +205,7 @@ Future generateWorkerScript(ArgResults argv, String libInclude) async {
     $oldPwaGDartMessage
 
     // Start the worker.
-    worker.run();
+    worker.run(version: offline.lastModified);
   }
   ''';
   src = new DartFormatter().format(src);
@@ -190,7 +214,8 @@ Future generateWorkerScript(ArgResults argv, String libInclude) async {
     print('INFO: ${pwaDart.path} exists, no change has been made.');
     List<String> oldLines = await pwaDart.readAsLines();
     if (!oldLines.contains('void main() {')) {
-      print('WARN: Entry point in ${pwaDart.path} changed its signature, potential error. '
+      print(
+          'WARN: Entry point in ${pwaDart.path} changed its signature, potential error. '
           'Do not use async before calling run().');
     }
   } else {

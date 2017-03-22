@@ -36,5 +36,5 @@ void main() {
   // worker.router.registerGetUrl('https://cdn.example.com/', cache.networkFirst);
 
   // Start the worker.
-  worker.run();
+  worker.run(version: offline.lastModified);
 }

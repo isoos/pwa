@@ -31,5 +31,5 @@ void main() {
       .registerGetUrl('https://i.ytimg.com/vi/', youtubeThumbnails.cacheFirst);
 
   // Start the worker.
-  worker.run();
+  worker.run(version: offline.lastModified);
 }

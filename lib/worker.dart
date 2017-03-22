@@ -43,7 +43,14 @@ class Worker {
   AsyncInitializer onActivate;
 
   /// Start the PWA (in the ServiceWorker scope).
-  void run() => _run(this);
+  void run({String version}) {
+    if (version == null) {
+      print('Consider using version when calling Worker.run().');
+    } else {
+      print('Running PWA, version: $version');
+    }
+    _run(this);
+  }
 }
 
 bool _isRunning = false;
