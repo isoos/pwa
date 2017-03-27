@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.3
+
+- Workaround for a bug in Chrome: ServiceWorkerContainer.ready may not complete
+  in certain cases (for no apparent reason). Added a timeout of two seconds and
+  return the registered SW instance.
+
 ## 0.1.2
 
 - Filter offline URLs:

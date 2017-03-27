@@ -27,8 +27,13 @@ class _Client implements Client {
   bool get isSupported => sw.isSupported;
 
   Future<sw.ServiceWorkerRegistration> _triggerRegister(String url) async {
-    await sw.register(url);
-    return await sw.ready;
+    var reg = await sw.register(url);
+    // Workaround for a bug in Chrome: ServiceWorkerContainer.ready may not
+    // complete in certain cases (for no apparent reason). Added a timeout of
+    // two seconds and return the registered SW instance.
+    // TODO: Investigate why ready does not complete.
+    return await sw.ready
+        .timeout(new Duration(seconds: 2), onTimeout: () => reg);
   }
 
   Future _unregisterOldGPwa() async {
