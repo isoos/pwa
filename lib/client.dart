@@ -17,7 +17,9 @@ class _Client implements Client {
 
   _Client(String scriptUrl) {
     if (isSupported) {
-      _unregisterOldGPwa();
+      try {
+        _unregisterOldGPwa();
+      } catch (_) {}
       // _registration =
       _triggerRegister(scriptUrl);
     }
