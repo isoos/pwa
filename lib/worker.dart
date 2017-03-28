@@ -7,6 +7,7 @@ import 'package:service_worker/worker.dart';
 
 part 'src/cache.dart';
 part 'src/handler.dart';
+part 'src/push.dart';
 part 'src/router.dart';
 
 /// Async function that can be used in [Worker.onInstall] and [Worker.onActivate].
@@ -41,6 +42,9 @@ class Worker {
 
   /// The Function will get called on activating the PWA.
   AsyncInitializer onActivate;
+
+  /// Handler of Push notification events.
+  PushHandler pushHandler;
 
   /// Start the PWA (in the ServiceWorker scope).
   void run({String version}) {
@@ -107,6 +111,15 @@ void _run(Worker worker) {
 
   if (worker.skipWaiting) {
     skipWaiting();
+  }
+
+  if (worker.pushHandler != null) {
+    onPush.listen((PushEvent event) {
+      Future f = worker.pushHandler(new _PushContext());
+      if (f != null) {
+        event.waitUntil(f.then((_) => null, onError: (_) => null));
+      }
+    });
   }
 }
 

@@ -6,6 +6,8 @@
   in certain cases (for no apparent reason). Added a timeout of two seconds and
   return the registered SW instance.
 
+- Added higher-level API helpers for checking Push permission and handling push events.
+
 ## 0.1.2
 
 - Filter offline URLs:

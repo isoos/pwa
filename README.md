@@ -36,6 +36,11 @@ Learn more about PWAs:
   - Familiarize yourself with caching and routes.
   - Customize cache behavior for different parts of your app.
 
+**Push notification**
+
+- Push notification: [push_notification](https://github.com/isoos/pwa/tree/master/examples/push_notification)
+  - Check and/or request Push permission.
+  - Trigger and handle push event, show notification.
 
 ## Planned features
 
