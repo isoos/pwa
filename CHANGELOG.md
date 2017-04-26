@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.4
+
+- Expose `clientKeys` in `PushPermission`.
+
 ## 0.1.3
 
 - Workaround for a bug in Chrome: ServiceWorkerContainer.ready may not complete

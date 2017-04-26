@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:html';
 
 import 'package:angular2/angular2.dart';
@@ -25,6 +26,7 @@ class AppComponent {
   bool get showStatusPrompt => _permission?.isPrompt;
 
   String get endpointUrl => _permission.endpointUrl;
+  String get clientKeys => JSON.encode(_permission.clientKeys);
 
   bool get isFirefoxEndpoint =>
       endpointUrl.contains('//updates.push.services.mozilla.com/');

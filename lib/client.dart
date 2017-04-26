@@ -42,6 +42,12 @@ abstract class PushPermission {
   /// The endpoint URL that the subscription can use.
   String get endpointUrl;
 
+  /// The client keys that can be used to send encrypted data in push
+  /// notifications.
+  ///
+  /// Returns an empty map if no keys are present.
+  Map<String, String> get clientKeys;
+
   /// Unsubscribes from the current push notification subscription.
   Future unsubscribe();
 }
@@ -145,6 +151,10 @@ class _PushPermission extends PushPermission {
   @override
   String get endpointUrl =>
       _subscription == null ? null : _subscription.endpoint?.toString();
+
+  @override
+  Map<String, String> get clientKeys =>
+      _subscription == null ? {} : _subscription.getKeysAsString();
 
   @override
   Future unsubscribe() async {
