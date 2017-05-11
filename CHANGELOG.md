@@ -2,7 +2,13 @@
 
 ## 0.1.5
 
-- Console logging to uncover install/activation issues.
+- Console logging to uncover install/activation issues. That also causes a
+  behavior change: errors during install won't interrupt the setup of the SW.
+- Updated code generator:
+  - **Breaking change:** `--lib-dir` will refer to the `lib` directory of the
+    project, while its previous purpose will be handled by `--pwa-lib-dir`.
+    Most users won't be affected (when using the defaults).
+  - Invoke `pub build` not only on empty `build/` directory, but also when changes were detected.
 
 ## 0.1.4
 

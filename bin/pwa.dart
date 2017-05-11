@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'dart:math' show max;
 
 import 'package:args/args.dart';
 import 'package:dart_style/dart_style.dart';
@@ -12,16 +13,22 @@ Future main(List<String> args) async {
         ..addOption('index-html', defaultsTo: 'index.html')
         ..addOption('exclude', allowMultiple: true)
         ..addOption('exclude-defaults', defaultsTo: 'true')
-        ..addOption('lib-dir', defaultsTo: 'lib/pwa')
+        ..addOption('lib-dir', defaultsTo: 'lib')
+        ..addOption('pwa-lib-dir', defaultsTo: 'lib/pwa')
         ..addOption('lib-include')
         ..addOption('web-dir', defaultsTo: 'web'))
       .parse(args);
 
+  List<String> sources = [
+    argv['lib-dir'],
+    argv['web-dir'],
+    'pubspec.yaml',
+  ];
   List<String> offlineDirs = argv['offline'];
-  await buildProjectIfEmpty(offlineDirs);
+  String offlineUrlsFile = '${argv['pwa-lib-dir']}/offline_urls.g.dart';
+  await _buildProjectIfEmptyOrOld(sources, [offlineUrlsFile], offlineDirs);
   var urlScanner = new _OfflineUrlScanner.fromArgv(argv);
   await urlScanner.scan();
-  String offlineUrlsFile = '${argv['lib-dir']}/offline_urls.g.dart';
   await urlScanner.writeToFile(offlineUrlsFile);
 
   String libInclude = await detectLibInclude(argv);
@@ -34,12 +41,17 @@ Future main(List<String> args) async {
 }
 
 /// If build/web is empty, run `pub build`.
-Future buildProjectIfEmpty(List<String> offlineDirs) async {
+Future _buildProjectIfEmptyOrOld(List<String> sources, List<String> excludes,
+    List<String> offlineDirs) async {
   // This works only with the default value.
   if (offlineDirs.length == 1 && offlineDirs.first == 'build/web') {
     Directory dir = new Directory('build/web');
-    if (dir.existsSync() && dir.listSync().isNotEmpty) return;
-    print('Running pub build the first time:');
+    if (dir.existsSync() && dir.listSync().isNotEmpty) {
+      int lastSourceTimestamp = _getLastTimestamp(sources, excludes);
+      int lastOfflineTimestamp = _getLastTimestamp(offlineDirs, null);
+      if (lastSourceTimestamp < lastOfflineTimestamp) return;
+    }
+    print('Running pub build:');
     String executable = Platform.isWindows ? 'pub.exe' : 'pub';
     print('$executable build');
     print('-----');
@@ -52,6 +64,25 @@ Future buildProjectIfEmpty(List<String> offlineDirs) async {
     String status = exitCode == 0 ? 'OK' : 'Some error happened.';
     print('Pub build exited with code $exitCode ($status).');
   }
+}
+
+int _getLastTimestamp(List<String> paths, List<String> excludes) {
+  int ts = 0;
+  for (String path in paths) {
+    if (FileSystemEntity.isDirectorySync(path)) {
+      Directory dir = new Directory(path);
+      for (FileSystemEntity fse in dir.listSync(recursive: true)) {
+        if (excludes?.contains(fse.path) == true) continue;
+        if (fse is File) {
+          ts = max(ts, fse.statSync().modified.millisecondsSinceEpoch);
+        }
+      }
+    } else if (FileSystemEntity.isFileSync(path)) {
+      if (excludes?.contains(path) == true) continue;
+      ts = max(ts, new File(path).statSync().modified.millisecondsSinceEpoch);
+    }
+  }
+  return ts;
 }
 
 /// Scans all of the directories and returns the URLs derived from the files.
@@ -158,7 +189,7 @@ Future<String> detectLibInclude(ArgResults argv) async {
 
 /// Generates the PWA's worker script.
 Future generateWorkerScript(ArgResults argv, String libInclude) async {
-  String libDir = argv['lib-dir'];
+  String libDir = argv['pwa-lib-dir'];
   bool hasLibWorker = new File('$libDir/worker.dart').existsSync();
 
   File oldPwaGDart = new File('${argv['web-dir']}/pwa.g.dart');
