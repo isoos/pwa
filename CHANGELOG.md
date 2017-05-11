@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.5
+
+- Console logging to uncover install/activation issues.
+
 ## 0.1.4
 
 - Expose `clientKeys` in `PushPermission`.

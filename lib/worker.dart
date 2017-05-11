@@ -79,11 +79,19 @@ void _run(Worker worker) {
 
   Func0<Future> installCallback = () async {
     if (offline != null) {
-      await offline.precache(worker.offlineUrls);
+      try {
+        await offline.precache(worker.offlineUrls);
+      } catch (e, st) {
+        print('Precache of ${worker.offlineUrls.length}'
+            ' offline URLs failed: $e\n$st');
+      }
     }
     if (worker.onInstall != null) {
-      Future f = worker.onInstall();
-      if (f != null) await f;
+      try {
+        await worker.onInstall();
+      } catch (e, st) {
+        print('onInstall() failed: $e\n$st');
+      }
     }
   };
   onInstall.listen((InstallEvent event) {
@@ -92,8 +100,11 @@ void _run(Worker worker) {
 
   Func0<Future> activateCallback = () async {
     if (worker.onActivate != null) {
-      Future f = worker.onActivate();
-      if (f != null) await f;
+      try {
+        await worker.onActivate();
+      } catch (e, st) {
+        print('onActivate() failed: $e\n$st');
+      }
     }
   };
   onActivate.listen((ExtendableEvent event) {
