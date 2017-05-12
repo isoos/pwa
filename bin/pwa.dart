@@ -122,6 +122,8 @@ class _OfflineUrlScanner {
         // misc packages
         'packages/test/**',
         'packages/package_resolver/**',
+        // sources that are not needed
+        '**.scss',
       ].map((s) => new Glob(s)));
     }
     excludeGlobs.addAll(_excludes.map((s) => new Glob(s)));

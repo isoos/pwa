@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.6
+
+- Do not include `.scss` files in generated offline URLs.
+
 ## 0.1.5
 
 - Console logging to uncover install/activation issues. That also causes a
