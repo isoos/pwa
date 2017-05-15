@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.7
+
+- Generate `manifest.json`.
+
 ## 0.1.6
 
 - Do not include `.scss` files in generated offline URLs.

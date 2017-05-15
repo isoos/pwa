@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 import 'dart:math' show max;
 
@@ -26,18 +27,75 @@ Future main(List<String> args) async {
   ];
   List<String> offlineDirs = argv['offline'];
   String offlineUrlsFile = '${argv['pwa-lib-dir']}/offline_urls.g.dart';
-  await _buildProjectIfEmptyOrOld(sources, [offlineUrlsFile], offlineDirs);
-  var urlScanner = new _OfflineUrlScanner.fromArgv(argv);
-  await urlScanner.scan();
-  await urlScanner.writeToFile(offlineUrlsFile);
 
-  String libInclude = await detectLibInclude(argv);
+  Map pubspec = await _loadPubspec('.');
+  String libInclude = await _detectLibInclude(argv, pubspec);
   if (libInclude == null) {
     print('Unable to detect library include prefix. '
         'Run script from the root of the project or specify lib-include.');
     exit(-1);
   }
+
+  await _generateManifestJson(argv['web-dir'], pubspec);
+  await _buildProjectIfEmptyOrOld(sources, [offlineUrlsFile], offlineDirs);
+  var urlScanner = new _OfflineUrlScanner.fromArgv(argv);
+  await urlScanner.scan();
+  await urlScanner.writeToFile(offlineUrlsFile);
+
   await generateWorkerScript(argv, libInclude);
+}
+
+Future _generateManifestJson(String webDir, Map pubspec) async {
+  if (pubspec == null) return;
+  File manifestFile = new File('$webDir/manifest.json');
+  if (manifestFile.existsSync()) return;
+
+  String name = pubspec['name'];
+  String themeColor = '#ffffff';
+
+  Map manifestMap = {
+    'name': name,
+    'short_name': name,
+    'description': pubspec['description'],
+    'lang': 'en-US',
+    'start_url': '/',
+    'scope': '/',
+    'display': 'standalone',
+    'orientation': 'any',
+    'theme_color': themeColor,
+    'background_color': themeColor,
+    '__mock_values__icons': [
+      {
+        'src': 'launcher-icon-1x.png',
+        'sizes': '48x48',
+        'type': 'image/png',
+      },
+      {
+        'src': 'launcher-icon-2x.png',
+        'sizes': '96x96',
+        'type': 'image/png',
+      },
+      {
+        'src': 'launcher-icon-4x.png',
+        'sizes': '192x192',
+        'type': 'image/png',
+      }
+    ],
+  };
+  String json = new JsonEncoder.withIndent('  ').convert(manifestMap) + '\n';
+  await _updateIfNeeded(manifestFile.path, json);
+
+  File indexHtmlFile = new File('$webDir/index.html');
+  String indexHtmlContent = await indexHtmlFile.readAsString();
+  if (!indexHtmlContent.contains('href="manifest.json"') &&
+      !indexHtmlContent.contains('rel="manifest"')) {
+    indexHtmlContent = indexHtmlContent.replaceFirst(
+        '<head>',
+        '<head>\n'
+        '    <link rel="manifest" href="manifest.json" />\n'
+        '    <meta name="theme-color" content="$themeColor" />');
+  }
+  await _updateIfNeeded(indexHtmlFile.path, indexHtmlContent);
 }
 
 /// If build/web is empty, run `pub build`.
@@ -176,16 +234,10 @@ class _OfflineUrlScanner {
 }
 
 /// Detects the package name if lib-include is not set.
-Future<String> detectLibInclude(ArgResults argv) async {
+Future<String> _detectLibInclude(ArgResults argv, Map pubspec) async {
   String libInclude = argv['lib-include'];
   if (libInclude != null) return libInclude;
-  File pubspec = new File('pubspec.yaml');
-  if (pubspec.existsSync()) {
-    var data = yaml.loadYaml(await pubspec.readAsString());
-    if (data is Map) {
-      return data['name'];
-    }
-  }
+  if (pubspec != null) return pubspec['name'];
   return null;
 }
 
@@ -276,4 +328,15 @@ Future _updateIfNeeded(String fileName, String content) async {
   }
   print('INFO: Updating file: $fileName');
   await file.writeAsString(content);
+}
+
+Future<Map> _loadPubspec(String projectDir) async {
+  File file = new File('$projectDir/pubspec.yaml');
+  if (file.existsSync()) {
+    var data = yaml.loadYaml(await file.readAsString());
+    if (data is Map) {
+      return data;
+    }
+  }
+  return null;
 }
