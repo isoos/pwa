@@ -18,6 +18,9 @@ Learn more about PWAs:
 - [https://developers.google.com/web/progressive-web-apps/](https://developers.google.com/web/progressive-web-apps/)
 - [https://pwa.rocks/](https://pwa.rocks/)
 
+Articles about this packages:
+- [Making a Dart web app offline-capable: 3 lines of code](https://medium.com/dartlang/making-a-dart-web-app-offline-capable-3-lines-of-code-e980010a7815)
+
 ## Tutorial and Examples
 
 **Getting started**
