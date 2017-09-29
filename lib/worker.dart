@@ -2,7 +2,6 @@ library pwa_worker;
 
 import 'dart:async';
 
-import 'package:func/func.dart';
 import 'package:service_worker/worker.dart';
 
 part 'src/cache.dart';
@@ -71,13 +70,13 @@ void _run(Worker worker) {
   DynamicCache commonWebFonts;
   if (worker.cacheCommonWebFonts) {
     commonWebFonts = new DynamicCache('common-webfonts',
-        maxAge: new Duration(days: 365), maxEntries: 256);
+        maxAge: const Duration(days: 365), maxEntries: 256);
     for (String prefix in _commonWebFontPrefixes) {
       worker.router.registerGetUrl(prefix, commonWebFonts.networkFirst);
     }
   }
 
-  Func0<Future> installCallback = () async {
+  Future installCallback() async {
     if (offline != null) {
       try {
         await offline.precache(worker.offlineUrls);
@@ -93,12 +92,13 @@ void _run(Worker worker) {
         print('onInstall() failed: $e\n$st');
       }
     }
-  };
+  }
+
   onInstall.listen((InstallEvent event) {
     event.waitUntil(installCallback());
   });
 
-  Func0<Future> activateCallback = () async {
+  Future activateCallback() async {
     if (worker.onActivate != null) {
       try {
         await worker.onActivate();
@@ -106,7 +106,8 @@ void _run(Worker worker) {
         print('onActivate() failed: $e\n$st');
       }
     }
-  };
+  }
+
   onActivate.listen((ExtendableEvent event) {
     event.waitUntil(activateCallback());
   });

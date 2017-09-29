@@ -123,7 +123,7 @@ class _Client implements Client {
     // two seconds and return the registered SW instance.
     // TODO: Investigate why ready does not complete.
     return await sw.ready
-        .timeout(new Duration(seconds: 2), onTimeout: () => reg);
+        .timeout(const Duration(seconds: 2), onTimeout: () => reg);
   }
 
   Future _unregisterOldGPwa() async {

@@ -17,11 +17,11 @@ class FetchRouter {
   void registerUrl(String method, Pattern url, RequestHandler handler) {
     String methodLowerCase = method.toLowerCase();
     bool methodMatched = methodLowerCase != 'any';
-    RequestMatcher matcher = (Request request) {
+    bool matcher(Request request) {
       String requestMethod = request.method.toLowerCase();
       if (methodMatched && requestMethod != methodLowerCase) return false;
       return url.matchAsPrefix(request.url) != null;
-    };
+    }
 
     registerMatcher(matcher, handler);
   }

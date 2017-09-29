@@ -7,8 +7,8 @@ typedef Future<Response> RequestHandler(Request request);
 final RequestHandler defaultRequestHandler = fetch;
 
 /// Network [RequestHandler] that skips the default disk cache.
-final RequestHandler noCacheNetworkRequestHandler =
-    (Request request) => fetch(request, new RequestInit(cache: 'no-store'));
+Future<Response> noCacheNetworkRequestHandler(Request request) =>
+    fetch(request, new RequestInit(cache: 'no-store'));
 
 /// Whether the [response] is valid (e.g. not an error, not a missing item).
 bool isValidResponse(Response response) {
@@ -38,7 +38,7 @@ RequestHandler raceHandlers(List<RequestHandler> handlers) =>
     (Request request) {
       Completer<Response> completer = new Completer();
       int remaining = handlers.length;
-      final complete = (Response response) {
+      void complete(Response response) {
         remaining--;
         if (completer.isCompleted) return;
         if (isValidResponse(response)) {
@@ -48,11 +48,10 @@ RequestHandler raceHandlers(List<RequestHandler> handlers) =>
         if (remaining == 0) {
           completer.complete(new Response.error());
         }
-      };
+      }
+
       for (RequestHandler handler in handlers) {
-        handler(request.clone()).then((Response response) {
-          complete(response);
-        }, onError: (e) {
+        handler(request.clone()).then(complete, onError: (e) {
           complete(null);
         });
       }

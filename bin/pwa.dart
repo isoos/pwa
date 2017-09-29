@@ -82,8 +82,8 @@ Future _generateManifestJson(String webDir, Map pubspec) async {
       }
     ],
   };
-  String json = new JsonEncoder.withIndent('  ').convert(manifestMap) + '\n';
-  await _updateIfNeeded(manifestFile.path, json);
+  String json = const JsonEncoder.withIndent('  ').convert(manifestMap);
+  await _updateIfNeeded(manifestFile.path, '$json\n');
 
   File indexHtmlFile = new File('$webDir/index.html');
   String indexHtmlContent = await indexHtmlFile.readAsString();

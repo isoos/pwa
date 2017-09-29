@@ -127,9 +127,7 @@ class BlockCache extends FetchStrategy {
       await _initializeFuture;
     }
     if (_cacheName == null) return null;
-    if (_cache == null) {
-      _cache = await caches.open(_cacheName);
-    }
+    _cache ??= await caches.open(_cacheName);
     return _cache;
   }
 }
@@ -265,6 +263,7 @@ class DynamicCache extends FetchStrategy {
           if (b.age == null) return -1;
           return a.age.compareTo(b.age);
         });
+        // ignore: invariant_booleans
         while (entries.length > _maxEntries) {
           await cache.delete(entries.removeLast().request);
         }

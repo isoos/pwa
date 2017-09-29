@@ -14,6 +14,11 @@ class AppComponent {
   pwa.Client _pwaClient;
   pwa.PushPermission _permission;
 
+  /// Injecting PWA client.
+  AppComponent(@Inject('pwa.Client') this._pwaClient) {
+    _initStatus();
+  }
+
   bool get isPwaSupported => _pwaClient.isSupported;
 
   String get status => _permission == null
@@ -33,11 +38,6 @@ class AppComponent {
 
   bool get isChromeEndpoint =>
       endpointUrl.contains('//android.googleapis.com/');
-
-  /// Injecting PWA client.
-  AppComponent(@Inject('pwa.Client') this._pwaClient) {
-    _initStatus();
-  }
 
   Future _initStatus() async {
     _permission = await _pwaClient.getPushPermission();
