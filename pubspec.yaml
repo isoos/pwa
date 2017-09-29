@@ -6,12 +6,12 @@ description: Progressive Web App library
 homepage: https://github.com/isoos/pwa
 
 environment:
-  sdk: ">=1.19.0 <2.0.0"
+  sdk: ">=1.21.0 <2.0.0"
 
 dependencies:
-  args: ^0.13.7
-  dart_style: ^0.2.16
-  func: ^0.1.1
+  args: ">=0.13.7 <1.0.0"
+  dart_style: ">=0.2.16 <1.1.0"
+  func: ">=0.1.1 <1.1.0"
   glob: ^1.1.3
-  service_worker: ^0.0.14
+  service_worker: ^0.1.0
   yaml: ^2.1.12
