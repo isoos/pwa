@@ -37,7 +37,12 @@ Future main(List<String> args) async {
   }
 
   await _generateManifestJson(argv['web-dir'], pubspec);
-  await _buildProjectIfEmptyOrOld(sources, [offlineUrlsFile], offlineDirs);
+  try {
+    await _buildProjectIfEmptyOrOld(sources, [offlineUrlsFile], offlineDirs);
+  } catch (e) {
+    print('WARNING: Project build failed with error: $e\n'
+        'List of offline files may be outdated.');
+  }
   var urlScanner = new _OfflineUrlScanner.fromArgv(argv);
   await urlScanner.scan();
   await urlScanner.writeToFile(offlineUrlsFile);
@@ -110,7 +115,15 @@ Future _buildProjectIfEmptyOrOld(List<String> sources, List<String> excludes,
       if (lastSourceTimestamp < lastOfflineTimestamp) return;
     }
     print('Running pub build:');
-    String executable = Platform.isWindows ? 'pub.exe' : 'pub';
+    String executable = 'pub';
+    if (Platform.isWindows) {
+      try {
+        final pr = await Process.run('pub.exe', ['--version']);
+        if (pr.exitCode == 0) {
+          executable = 'pub.exe';
+        }
+      } catch (_) {}
+    }
     print('$executable build');
     print('-----');
     Process process = await Process.start(executable, ['build']);

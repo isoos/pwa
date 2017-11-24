@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.1.8
+
+- Better `pub.exe` detection on Windows.
+- Do not abort if project build fails.
+
 ## 0.1.7
 
 - Generate `manifest.json`.
