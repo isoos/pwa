@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.9
+
+- Remove `package:func` dependency.
+
 ## 0.1.8
 
 - Better `pub.exe` detection on Windows.
