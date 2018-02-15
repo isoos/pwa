@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.9+1
+
+- Support `args: ">=0.13.7 <2.0.0"`.
+
 ## 0.1.9
 
 - Remove `package:func` dependency.
