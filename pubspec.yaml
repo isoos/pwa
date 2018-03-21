@@ -1,5 +1,5 @@
 name: pwa
-version: 0.1.9+1
+version: 0.1.10
 author: Istvan Soos <istvan.soos@gmail.com>
 description: Progressive Web App library
 
@@ -12,5 +12,5 @@ dependencies:
   args: ">=0.13.7 <2.0.0"
   dart_style: ">=0.2.16 <1.1.0"
   glob: ^1.1.3
-  service_worker: ^0.1.0
+  service_worker: '>=0.1.0 <0.3.0'
   yaml: ^2.1.12
