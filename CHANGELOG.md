@@ -1,4 +1,6 @@
-# Changelog
+## 0.1.10
+
+- Support the latest version of `package:service_worker`.
 
 ## 0.1.9+1
 
