@@ -31,7 +31,7 @@ class AppComponent {
   bool get showStatusPrompt => _permission?.isPrompt;
 
   String get endpointUrl => _permission.endpointUrl;
-  String get clientKeys => JSON.encode(_permission.clientKeys);
+  String get clientKeys => json.encode(_permission.clientKeys);
 
   bool get isFirefoxEndpoint =>
       endpointUrl.contains('//updates.push.services.mozilla.com/');
