@@ -10,9 +10,9 @@ import 'package:yaml/yaml.dart' as yaml;
 
 Future main(List<String> args) async {
   ArgResults argv = (new ArgParser()
-        ..addOption('offline', allowMultiple: true, defaultsTo: 'build/web')
+        ..addMultiOption('offline', defaultsTo: ['build/web'])
         ..addOption('index-html', defaultsTo: 'index.html')
-        ..addOption('exclude', allowMultiple: true)
+        ..addMultiOption('exclude')
         ..addOption('exclude-defaults', defaultsTo: 'true')
         ..addOption('lib-dir', defaultsTo: 'lib')
         ..addOption('pwa-lib-dir', defaultsTo: 'lib/pwa')

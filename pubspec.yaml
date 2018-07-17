@@ -1,16 +1,16 @@
 name: pwa
-version: 0.1.10
+version: 0.2.0
 author: Istvan Soos <istvan.soos@gmail.com>
 description: Progressive Web App library
 
 homepage: https://github.com/isoos/pwa
 
 environment:
-  sdk: ">=1.21.0 <2.0.0"
+  sdk: ">=1.21.0 <3.0.0"
 
 dependencies:
-  args: ">=0.13.7 <2.0.0"
-  dart_style: ">=0.2.16 <1.1.0"
+  args: ^1.4.0
+  dart_style: ">=0.2.16 <1.2.0"
   glob: ^1.1.3
   service_worker: '>=0.1.0 <0.3.0'
   yaml: ^2.1.12
