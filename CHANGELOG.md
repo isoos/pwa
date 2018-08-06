@@ -1,3 +1,7 @@
+## 0.1.11
+
+- Support Dart 2 stable.
+
 ## 0.1.10
 
 - Support the latest version of `package:service_worker`.

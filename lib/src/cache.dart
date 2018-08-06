@@ -168,8 +168,7 @@ class DynamicCache extends FetchStrategy {
     /// If not specified, the service worker's path name will be used to
     /// derive the prefix. In the default setup this will be `pwa`.
     String prefix,
-  })
-      : _maxAge = maxAge,
+  })  : _maxAge = maxAge,
         _maxEntries = maxEntries {
     prefix ??= _defaultCachePrefix;
     _cacheName = '$prefix-dyn-$name';
