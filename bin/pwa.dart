@@ -10,7 +10,7 @@ import 'package:yaml/yaml.dart' as yaml;
 
 Future main(List<String> args) async {
   ArgResults argv = (new ArgParser()
-        ..addMultiOption('offline', defaultsTo: ['build/web'])
+        ..addMultiOption('offline', defaultsTo: ['build'])
         ..addOption('index-html', defaultsTo: 'index.html')
         ..addMultiOption('exclude')
         ..addOption('exclude-defaults', defaultsTo: 'true')
@@ -103,24 +103,24 @@ Future _generateManifestJson(String webDir, Map pubspec) async {
   await _updateIfNeeded(indexHtmlFile.path, indexHtmlContent);
 }
 
-/// If build/web is empty, run `pub build`.
+/// If build/ is empty, run `webdev build`.
 Future _buildProjectIfEmptyOrOld(List<String> sources, List<String> excludes,
     List<String> offlineDirs) async {
   // This works only with the default value.
-  if (offlineDirs.length == 1 && offlineDirs.first == 'build/web') {
-    Directory dir = new Directory('build/web');
+  if (offlineDirs.length == 1 && offlineDirs.first == 'build') {
+    Directory dir = new Directory('build');
     if (dir.existsSync() && dir.listSync().isNotEmpty) {
       int lastSourceTimestamp = _getLastTimestamp(sources, excludes);
       int lastOfflineTimestamp = _getLastTimestamp(offlineDirs, null);
       if (lastSourceTimestamp < lastOfflineTimestamp) return;
     }
-    print('Running pub build:');
-    String executable = 'pub';
+    print('Running webdev build:');
+    String executable = 'webdev';
     if (Platform.isWindows) {
       try {
-        final pr = await Process.run('pub.exe', ['--version']);
+        final pr = await Process.run('webdev.exe', ['--version']);
         if (pr.exitCode == 0) {
-          executable = 'pub.exe';
+          executable = 'webdev.exe';
         }
       } catch (_) {}
     }
@@ -133,7 +133,7 @@ Future _buildProjectIfEmptyOrOld(List<String> sources, List<String> excludes,
     int exitCode = await process.exitCode;
     print('-----');
     String status = exitCode == 0 ? 'OK' : 'Some error happened.';
-    print('Pub build exited with code $exitCode ($status).');
+    print('Webdev build exited with code $exitCode ($status).');
   }
 }
 
@@ -195,6 +195,8 @@ class _OfflineUrlScanner {
         'packages/package_resolver/**',
         // sources that are not needed
         '**.scss',
+        // Git files
+        '**.git/**',
       ].map((s) => new Glob(s)));
     }
     excludeGlobs.addAll(_excludes.map((s) => new Glob(s)));
@@ -232,7 +234,7 @@ class _OfflineUrlScanner {
 
   /// Updates the offline_urls.g.dart file.
   Future writeToFile(String fileName) async {
-    String listItems = offlineUrls.map((s) => '\'$s\',').join();
+    String listItems = offlineUrls.map((s) => 'r\'$s\',').join();
     String lastModifiedText = lastModified.toUtc().toIso8601String();
     String src = '''
     /// URLs for offline cache.
@@ -288,7 +290,7 @@ Future generateWorkerScript(ArgResults argv, String libInclude) async {
 
     // The static assets that need to be in the cache for offline mode.
     // By default it uses the automatically generated list from the output of
-    // `pub build`. To refresh this list, run `pub run pwa` after each new build.
+    // `webdev build`. To refresh this list, run `pub run pwa` after each new build.
     worker.offlineUrls = offline.offlineUrls;
 
     // The above list can be extended with additional URLs:
