@@ -1,3 +1,7 @@
+## 0.1.12
+
+- Updated dependency.
+
 ## 0.1.11
 
 - Support Dart 2 stable.
