@@ -114,13 +114,13 @@ Future _buildProjectIfEmptyOrOld(List<String> sources, List<String> excludes,
       int lastOfflineTimestamp = _getLastTimestamp(offlineDirs, null);
       if (lastSourceTimestamp < lastOfflineTimestamp) return;
     }
-    print('Running pub build:');
-    String executable = 'pub';
+    print('Running webdev build:');
+    String executable = 'webdev';
     if (Platform.isWindows) {
       try {
-        final pr = await Process.run('pub.exe', ['--version']);
+        final pr = await Process.run('webdev', ['--version']);
         if (pr.exitCode == 0) {
-          executable = 'pub.exe';
+          executable = 'webdev';
         }
       } catch (_) {}
     }
@@ -133,7 +133,7 @@ Future _buildProjectIfEmptyOrOld(List<String> sources, List<String> excludes,
     int exitCode = await process.exitCode;
     print('-----');
     String status = exitCode == 0 ? 'OK' : 'Some error happened.';
-    print('Pub build exited with code $exitCode ($status).');
+    print('webdev build exited with code $exitCode ($status).');
   }
 }
 
