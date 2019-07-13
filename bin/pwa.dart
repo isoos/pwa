@@ -10,7 +10,7 @@ import 'package:yaml/yaml.dart' as yaml;
 
 Future main(List<String> args) async {
   ArgResults argv = (new ArgParser()
-        ..addMultiOption('offline', defaultsTo: ['build/web'])
+        ..addMultiOption('offline', defaultsTo: ['build'])
         ..addOption('index-html', defaultsTo: 'index.html')
         ..addMultiOption('exclude')
         ..addOption('exclude-defaults', defaultsTo: 'true')
@@ -103,12 +103,12 @@ Future _generateManifestJson(String webDir, Map pubspec) async {
   await _updateIfNeeded(indexHtmlFile.path, indexHtmlContent);
 }
 
-/// If build/web is empty, run `pub build`.
+/// If build is empty, run `pub build`.
 Future _buildProjectIfEmptyOrOld(List<String> sources, List<String> excludes,
     List<String> offlineDirs) async {
   // This works only with the default value.
-  if (offlineDirs.length == 1 && offlineDirs.first == 'build/web') {
-    Directory dir = new Directory('build/web');
+  if (offlineDirs.length == 1 && offlineDirs.first == 'build') {
+    Directory dir = new Directory('build');
     if (dir.existsSync() && dir.listSync().isNotEmpty) {
       int lastSourceTimestamp = _getLastTimestamp(sources, excludes);
       int lastOfflineTimestamp = _getLastTimestamp(offlineDirs, null);
