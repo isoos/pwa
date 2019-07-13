@@ -17,7 +17,7 @@ Future main(List<String> args) async {
         ..addOption('lib-dir', defaultsTo: 'lib')
         ..addOption('pwa-lib-dir', defaultsTo: 'lib/pwa')
         ..addOption('lib-include')
-        ..addOption('web-dir', defaultsTo: 'web'))
+        ..addOption('web-dir', defaultsTo: ''))
       .parse(args);
 
   List<String> sources = [
