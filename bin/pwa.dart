@@ -232,7 +232,10 @@ class _OfflineUrlScanner {
 
   /// Updates the offline_urls.g.dart file.
   Future writeToFile(String fileName) async {
-    String listItems = offlineUrls.map((s) => '\'$s\',').join();
+    String listItems = offlineUrls
+      .map((s) => '\'$s\',')
+      .map((s) => s.replaceAll('\$', '\\\$'))
+      .join();
     String lastModifiedText = lastModified.toUtc().toIso8601String();
     String src = '''
     /// URLs for offline cache.
