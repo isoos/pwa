@@ -25,6 +25,10 @@ Articles about this packages:
 
 **Getting started**
 
+## NOTE: 
+This library requires webdev installed locally. Install it using the command:
+> pub global activate webdev
+
 - Getting started: [pwa_defaults](https://github.com/isoos/pwa/tree/master/examples/pwa_defaults)
   - Shows you how to use the `pwa` package and what it does.
   - Enables offline asset caching for you web app out-of-the-box. 

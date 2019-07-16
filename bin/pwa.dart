@@ -10,7 +10,7 @@ import 'package:yaml/yaml.dart' as yaml;
 
 Future main(List<String> args) async {
   ArgResults argv = (new ArgParser()
-        ..addMultiOption('offline', defaultsTo: ['build/web'])
+        ..addMultiOption('offline', defaultsTo: ['build'])
         ..addOption('index-html', defaultsTo: 'index.html')
         ..addMultiOption('exclude')
         ..addOption('exclude-defaults', defaultsTo: 'true')
@@ -103,24 +103,24 @@ Future _generateManifestJson(String webDir, Map pubspec) async {
   await _updateIfNeeded(indexHtmlFile.path, indexHtmlContent);
 }
 
-/// If build/web is empty, run `pub build`.
+/// If build is empty, run `pub build`.
 Future _buildProjectIfEmptyOrOld(List<String> sources, List<String> excludes,
     List<String> offlineDirs) async {
   // This works only with the default value.
-  if (offlineDirs.length == 1 && offlineDirs.first == 'build/web') {
-    Directory dir = new Directory('build/web');
+  if (offlineDirs.length == 1 && offlineDirs.first == 'build') {
+    Directory dir = new Directory('build');
     if (dir.existsSync() && dir.listSync().isNotEmpty) {
       int lastSourceTimestamp = _getLastTimestamp(sources, excludes);
       int lastOfflineTimestamp = _getLastTimestamp(offlineDirs, null);
       if (lastSourceTimestamp < lastOfflineTimestamp) return;
     }
-    print('Running pub build:');
-    String executable = 'pub';
+    print('Running webdev build:');
+    String executable = 'webdev';
     if (Platform.isWindows) {
       try {
-        final pr = await Process.run('pub.exe', ['--version']);
+        final pr = await Process.run('webdev', ['--version']);
         if (pr.exitCode == 0) {
-          executable = 'pub.exe';
+          executable = 'webdev';
         }
       } catch (_) {}
     }
@@ -133,7 +133,7 @@ Future _buildProjectIfEmptyOrOld(List<String> sources, List<String> excludes,
     int exitCode = await process.exitCode;
     print('-----');
     String status = exitCode == 0 ? 'OK' : 'Some error happened.';
-    print('Pub build exited with code $exitCode ($status).');
+    print('webdev build exited with code $exitCode ($status).');
   }
 }
 
@@ -232,7 +232,13 @@ class _OfflineUrlScanner {
 
   /// Updates the offline_urls.g.dart file.
   Future writeToFile(String fileName) async {
-    String listItems = offlineUrls.map((s) => '\'$s\',').join();
+    String listItems = offlineUrls
+      .map((s) => '\'$s\',')
+      // Required due to a presence of a dollar sign in some package paths,
+      // showing up as syntax errors in the generated offline_urls.g.dart file.
+      // This map escapes the problematic character.
+      .map((s) => s.replaceAll('\$', '\\\$'))
+      .join();
     String lastModifiedText = lastModified.toUtc().toIso8601String();
     String src = '''
     /// URLs for offline cache.

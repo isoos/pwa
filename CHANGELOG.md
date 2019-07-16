@@ -1,3 +1,9 @@
+## 0.2.0
+
+- Using 'webdev' as new default build tool, replacing 'pub'.
+- As a consequence of the change above, the built files are placed directly inside build/ instead of build/web.
+- Fixed issues related to special characters inside Dart generated code.
+
 ## 0.1.12
 
 - Updated dependency.
