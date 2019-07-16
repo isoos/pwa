@@ -234,6 +234,9 @@ class _OfflineUrlScanner {
   Future writeToFile(String fileName) async {
     String listItems = offlineUrls
       .map((s) => '\'$s\',')
+      // Required due to a presence of a dollar sign in some package paths,
+      // showing up as syntax errors in the generated offline_urls.g.dart file.
+      // This map escapes the problematic character.
       .map((s) => s.replaceAll('\$', '\\\$'))
       .join();
     String lastModifiedText = lastModified.toUtc().toIso8601String();
