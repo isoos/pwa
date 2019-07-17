@@ -4,22 +4,13 @@ author: Istvan Soos <istvan.soos@gmail.com>
 description: PWA Example
 
 environment:
-  sdk: ">=1.19.0 <2.0.0"
+  sdk: ">=2.0.0"
 
 dependencies:
-  angular2: ^3.1.0
+  angular: ^5.3.1
   pwa:
     path: '../../'
 
 dev_dependencies:
-  browser: '>=0.10.0 <0.11.0'
-  dart_to_js_script_rewriter: '^1.0.1'
-
-transformers:
-- angular2:
-    platform_directives:
-    - 'package:angular2/common.dart#COMMON_DIRECTIVES'
-    platform_pipes:
-    - 'package:angular2/common.dart#COMMON_PIPES'
-    entry_points: web/main.dart
-- dart_to_js_script_rewriter
+  build_runner: '>=1.5.0 <2.0.0'
+  build_web_compilers: '>=1.2.0 <3.0.0'

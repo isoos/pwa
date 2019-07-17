@@ -1,5 +1,4 @@
-import 'package:angular2/di.dart';
-import 'package:angular2/platform/browser.dart';
+import 'package:angular/di.dart';
 
 import 'package:pwa/client.dart' as pwa;
 import 'package:pwa_example/app/app_component.dart';
