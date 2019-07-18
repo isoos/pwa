@@ -23,7 +23,6 @@ class AppComponent implements OnInit {
 
   /// Injecting PWA client.
   AppComponent(this._pwaClient) {
-    print(this._pwaClient);
     _initStatus();
   }
 

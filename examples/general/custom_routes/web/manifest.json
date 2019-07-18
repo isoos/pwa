@@ -1,6 +1,6 @@
 {
-  "name": "push_notification",
-  "short_name": "push_notification",
+  "name": "custom_routes",
+  "short_name": "custom_routes",
   "description": "A web app that uses AngularDart Components",
   "lang": "en-US",
   "start_url": "/",

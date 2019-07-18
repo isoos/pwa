@@ -1,6 +1,6 @@
 {
-  "name": "push_notification_new",
-  "short_name": "push_notification_new",
+  "name": "push_notification",
+  "short_name": "push_notification",
   "description": "A web app that uses AngularDart Components",
   "lang": "en-US",
   "start_url": "/",
