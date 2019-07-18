@@ -1,0 +1,22 @@
+<p>
+  This is a component that is loaded asynchronously.
+</p>
+<p>
+  The following images are fetched from YouTube, and they are the
+  preview of the videos from the Dart Developer Summit.
+</p>
+<p>
+  If you have a modern browser with ServiceWorker support, some of
+  these will be served from cache the next time. Try reloading the
+  page, and experiment what happens when the network is offline. In
+  Chrome:
+</p>
+<ul>
+  <li>Open Developer Console</li>
+  <li>Switch to "Network" tab</li>
+  <li>Turn on "Offline" and "Disable cache"</li>
+  <li>Reload this page.</li>
+</ul>
+<div *ngFor="let item of images" style="display: inline-block; width: 240px; height: 180px;">
+  <img [src]="item" style="max-width: 200px; height: auto;"/>
+</div>
