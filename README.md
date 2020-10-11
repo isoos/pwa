@@ -29,23 +29,23 @@ Articles about this packages:
 This library requires webdev installed locally. Install it using the command:
 > pub global activate webdev
 
-- Getting started: [pwa_defaults](https://github.com/isoos/pwa/tree/master/examples/pwa_defaults)
+- Getting started: [pwa_defaults](https://github.com/isoos/pwa/tree/master/examples/general/pwa_defaults)
   - Shows you how to use the `pwa` package and what it does.
   - Enables offline asset caching for you web app out-of-the-box. 
 
-- Additional offline urls: [additional_offline_urls](https://github.com/isoos/pwa/tree/master/examples/additional_offline_urls)
+- Additional offline urls: [additional_offline_urls](https://github.com/isoos/pwa/tree/master/examples/general/additional_offline_urls)
   - Show you how to create the entry point for customization.
   - Gives you the ability to add additional URLs for the offline cache.
 
 **Customize caching**
 
-- Custom routes: [custom_routes](https://github.com/isoos/pwa/tree/master/examples/custom_routes)
+- Custom routes: [custom_routes](https://github.com/isoos/pwa/tree/master/examples/general/custom_routes)
   - Familiarize yourself with caching and routes.
   - Customize cache behavior for different parts of your app.
 
 **Push notification**
 
-- Push notification: [push_notification](https://github.com/isoos/pwa/tree/master/examples/push_notification)
+- Push notification: [push_notification](https://github.com/isoos/pwa/tree/master/examples/general/push_notification)
   - Check and/or request Push permission.
   - Trigger and handle push event, show notification.
 
