@@ -1,4 +1,4 @@
 import 'interface.dart';
 
-BaseClient getClient({String scriptUrl}) =>
+BaseClient createPwaClient({String scriptUrl}) =>
     throw UnimplementedError('getClient');

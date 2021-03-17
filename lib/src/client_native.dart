@@ -1,6 +1,6 @@
 import 'interface.dart';
 
-BaseClient getClient({String scriptUrl}) => NativeClient();
+BaseClient createPwaClient({String scriptUrl}) => NativeClient();
 
 class NativeClient implements BaseClient {
   @override

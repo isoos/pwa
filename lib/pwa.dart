@@ -1,14 +1,6 @@
 library pwa;
 
-import 'src/client_stub.dart' //
+export 'src/client_stub.dart' //
     if (dart.library.io) 'src/client_native.dart'
     if (dart.library.html) 'src/client_web.dart';
-import 'src/interface.dart';
 export 'src/interface.dart';
-
-abstract class Client {
-  /// Initializes a PWA client instance, also triggering the registration of
-  /// the ServiceWorker on the given [scriptUrl].
-  static BaseClient create({String scriptUrl: './pwa.dart.js'}) =>
-      getClient(scriptUrl: scriptUrl);
-}
