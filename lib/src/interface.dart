@@ -1,8 +1,8 @@
 /// PWA client that is running in the window scope.
-abstract class BaseClient {
+abstract class Client {
   /// Initializes a PWA client instance, also triggering the registration of
   /// the ServiceWorker on the given [scriptUrl].
-  BaseClient({String scriptUrl: './pwa.dart.js'});
+  Client({String scriptUrl: './pwa.dart.js'});
 
   /// Whether the PWA is supported on this client.
   bool get isSupported;

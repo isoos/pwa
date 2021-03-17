@@ -5,10 +5,10 @@ import 'interface.dart';
 
 /// Initializes a PWA client instance, also triggering the registration of
 /// the ServiceWorker on the given [scriptUrl].
-BaseClient createPwaClient({String scriptUrl: './pwa.dart.js'}) =>
+Client createPwaClient({String scriptUrl: './pwa.dart.js'}) =>
     WebClient(scriptUrl);
 
-class WebClient implements BaseClient {
+class WebClient implements Client {
   Future<sw.ServiceWorkerRegistration> _registration;
 
   WebClient(String scriptUrl) {

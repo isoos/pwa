@@ -1,8 +1,8 @@
 import 'interface.dart';
 
-BaseClient createPwaClient({String scriptUrl}) => NativeClient();
+Client createPwaClient({String scriptUrl}) => NativeClient();
 
-class NativeClient implements BaseClient {
+class NativeClient implements Client {
   @override
   Future<PushPermission> getPushPermission({bool subscribeIfNeeded = false}) {}
 
