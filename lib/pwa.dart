@@ -1,10 +1,10 @@
 library pwa;
 
-import 'client_stub.dart' //
-    if (dart.library.io) 'client_native.dart'
-    if (dart.library.html) 'client_web.dart';
-import 'interface.dart';
-export 'interface.dart';
+import 'src/client_stub.dart' //
+    if (dart.library.io) 'src/client_native.dart'
+    if (dart.library.html) 'src/client_web.dart';
+import 'src/interface.dart';
+export 'src/interface.dart';
 
 abstract class Client {
   /// Initializes a PWA client instance, also triggering the registration of
