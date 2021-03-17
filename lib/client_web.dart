@@ -1,14 +1,14 @@
 import 'dart:async';
 
-import 'package:pwa/interface.dart';
 import 'package:service_worker/window.dart' as sw;
+import 'interface.dart';
 
-class Client implements BaseClient {
+BaseClient getClient({String scriptUrl}) => WebClient(scriptUrl);
+
+class WebClient implements BaseClient {
   Future<sw.ServiceWorkerRegistration> _registration;
 
-  /// Initializes a PWA client instance, also triggering the registration of
-  /// the ServiceWorker on the given [scriptUrl].
-  Client({String scriptUrl: './pwa.dart.js'}) {
+  WebClient(String scriptUrl) {
     if (isSupported) {
       try {
         _unregisterOldGPwa();

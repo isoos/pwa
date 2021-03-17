@@ -1,7 +1,3 @@
-import 'client.dart' //
-    if (dart.library.io) 'client_io.dart'
-    if (dart.library.html) 'client_web.dart';
-
 /// PWA client that is running in the window scope.
 abstract class BaseClient {
   /// Initializes a PWA client instance, also triggering the registration of
