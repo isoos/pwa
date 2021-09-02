@@ -1,3 +1,7 @@
+## 0.2.1
+
+- Updated dependency constraints to allow newer versions.
+
 ## 0.2.0
 
 - Using 'webdev' as new default build tool, replacing 'pub'.
